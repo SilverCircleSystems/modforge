@@ -9,7 +9,6 @@
   html, body, #root { width: 100%; min-height: 100vh; background: #0a0a0a; }
   body { overflow-x: hidden; }
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
-  /* Scrollbar styling */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: #0a0a0a; }
   ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
@@ -243,6 +242,19 @@ const COMPONENT_BOM = {
     hpWidth: 6,
     currentDraw: { pos12v: 25, neg12v: 5 },
   },
+  MULT: {
+    description: "Buffered Multiple / Signal Splitter",
+    components: [
+      { part: "TL074 Quad Op-Amp", qty: 1, ref: "U1", note: "4× unity-gain buffers for isolated outputs", approxCost: 0.80 },
+      { part: "100kΩ Resistor 1%", qty: 4, ref: "R1-R4", note: "Buffer feedback resistors", approxCost: 0.40 },
+      { part: "1kΩ Resistor 1%", qty: 4, ref: "R5-R8", note: "Output protection", approxCost: 0.40 },
+      { part: "100nF Ceramic Cap", qty: 2, ref: "C1-C2", note: "Decoupling", approxCost: 0.20 },
+      { part: "Thonkiconn 3.5mm Jack (PJ398SM)", qty: 5, ref: "J1-J5", note: "1× Input, 4× Output", approxCost: 5.00 },
+      { part: "10-pin Eurorack Power Header", qty: 1, ref: "PWR", note: "+12V / -12V power", approxCost: 0.50 },
+    ],
+    hpWidth: 4,
+    currentDraw: { pos12v: 8, neg12v: 8 },
+  },
 };
 
 // ─── MODULE CONFIGS ──────────────────────────────────────────────────────────
@@ -376,6 +388,15 @@ const MODULE_DEFS = {
     ],
     inputs: [],
     outputs: ["Clock", "÷2", "÷4", "Reset"],
+  },
+  MULT: {
+    color: "#b0bec5",
+    icon: "⑃",
+    params: [
+      { name: "gain", label: "GAIN", min: 0, max: 2, default: 1, step: 0.01, unit: "" },
+    ],
+    inputs: ["In"],
+    outputs: ["A", "B", "C", "D"],
   },
 };
 
@@ -783,6 +804,23 @@ class AudioEngine {
         }, stepTime);
         break;
       }
+      case "MULT": {
+        // Buffered multiple: 1 input → 4 isolated outputs via gain nodes
+        const inputGain = this.ctx.createGain();
+        inputGain.gain.value = params.gain || 1;
+        node.input = inputGain;
+        // Create 4 output buffers
+        node.outA = this.ctx.createGain(); node.outA.gain.value = 1;
+        node.outB = this.ctx.createGain(); node.outB.gain.value = 1;
+        node.outC = this.ctx.createGain(); node.outC.gain.value = 1;
+        node.outD = this.ctx.createGain(); node.outD.gain.value = 1;
+        inputGain.connect(node.outA);
+        inputGain.connect(node.outB);
+        inputGain.connect(node.outC);
+        inputGain.connect(node.outD);
+        node.output = node.outA; // Default output is A
+        break;
+      }
       default: {
         // CUSTOM modules from Design tab — type starts with CUSTOM_
         if (type.startsWith("CUSTOM_")) {
@@ -978,6 +1016,9 @@ class AudioEngine {
           }
         }
         break;
+      case "MULT":
+        if (paramName === "gain" && node.input) node.input.gain.value = value;
+        break;
     }
   }
 
@@ -999,6 +1040,12 @@ class AudioEngine {
       else if (fromPort === "÷4") src = fromNode.outputDiv4;
       else if (fromPort === "Reset") src = fromNode.outputReset;
       else src = fromNode.output; // Clock
+    } else if (fromNode.type === "MULT") {
+      if (fromPort === "A") src = fromNode.outA;
+      else if (fromPort === "B") src = fromNode.outB;
+      else if (fromPort === "C") src = fromNode.outC;
+      else if (fromPort === "D") src = fromNode.outD;
+      else src = fromNode.output;
     } else {
       src = fromNode.output;
     }
@@ -4160,6 +4207,51 @@ const MODULE_SCHEMATICS = {
       // Power header
       svg += S.header(50, 300, 10);
       svg += S.ground(100, 310);
+      return svg;
+    }
+  },
+  MULT: {
+    title: "BUFFERED MULTIPLE — TL074 Quad Op-Amp",
+    width: 550, height: 320,
+    render: () => {
+      let svg = "";
+      svg += S.label(275, 20, "BUFFERED MULTIPLE — 1→4 SIGNAL SPLITTER", 10, "#b0bec5");
+      // Power rails
+      svg += S.power(50, 40, "+12V");
+      svg += S.wire(50, 46, 50, 60);
+      svg += S.wire(50, 60, 400, 60);
+      svg += S.label(225, 52, "+12V RAIL", 7, "#e74c3c");
+      svg += S.wire(50, 270, 400, 270);
+      svg += S.ground(400, 270);
+      svg += S.label(225, 280, "GND RAIL", 7, "#666");
+      // Input jack
+      svg += S.jack(30, 150, "IN", true);
+      svg += S.wire(50, 150, 80, 150);
+      // Gain pot
+      svg += S.pot(90, 115, "GAIN", "100k");
+      svg += S.wire(115, 115, 140, 115);
+      // Decoupling caps
+      svg += S.capacitor(70, 75, false, "C1", "100nF");
+      svg += S.capacitor(120, 75, false, "C2", "100nF");
+      // 4× buffer op-amps
+      const outputs = ["A", "B", "C", "D"];
+      outputs.forEach((name, i) => {
+        const y = 100 + i * 45;
+        svg += S.wire(140, 115, 200, y);
+        svg += S.dot(140, 115);
+        svg += S.resistor(220, y, true, `R${i+1}`, "100kΩ");
+        svg += S.opamp(270, y, `U1${String.fromCharCode(97+i)}`, 40, 35);
+        svg += S.resistor(330, y - 25, true, `R${i+5}`, "100kΩ");
+        svg += S.wire(310, y, 340, y);
+        svg += S.wire(340, y, 340, y - 25);
+        svg += S.wire(340, y - 25, 280, y - 25);
+        svg += S.wire(340, y, 370, y);
+        svg += S.resistor(385, y, true, `R${i+9}`, "1kΩ");
+        svg += S.wire(410, y, 440, y);
+        svg += S.jack(450, y, name, false);
+      });
+      // Power header
+      svg += S.header(50, 290, 10);
       return svg;
     }
   },
