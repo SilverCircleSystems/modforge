@@ -1236,7 +1236,7 @@ function Knob({ value, min, max, step, onChange, label, unit, size = 40, color }
 }
 
 // ─── MODULE COMPONENT ────────────────────────────────────────────────────────
-function ModulePanel({ module, def, onParamChange, onRemove, onPortClick, onPortRightClick, activePort, connections, isOutput, engine }) {
+function ModulePanel({ module, def, onParamChange, onRemove, onPortClick, onPortDoubleClick, onPortRightClick, activePort, connections, isOutput, engine }) {
   const portStyle = (type, idx, portName) => {
     const isActive = activePort && activePort.moduleId === module.id && activePort.port === portName && activePort.type === type;
     const isConnected = connections.some(c =>
@@ -1293,9 +1293,10 @@ function ModulePanel({ module, def, onParamChange, onRemove, onPortClick, onPort
                 id={portId("input", inp)}
                 style={portStyle("input", i, inp)}
                 onClick={() => onPortClick(module.id, "input", inp)}
+                onDoubleClick={() => onPortDoubleClick && onPortDoubleClick(module.id, "input", inp)}
                 onContextMenu={(e) => onPortRightClick && onPortRightClick(e, module.id, "input", inp)}
                 data-port="true"
-                title="Click: connect • Right-click: add wire"
+                title="Click: connect • Double-click: release cable • Right-click: add wire"
               />
               <span style={{ fontSize: 7, color: "#666", fontFamily: "'JetBrains Mono', monospace" }}>{inp}</span>
             </div>
@@ -1350,9 +1351,10 @@ function ModulePanel({ module, def, onParamChange, onRemove, onPortClick, onPort
                 id={portId("output", out)}
                 style={portStyle("output", i, out)}
                 onClick={() => onPortClick(module.id, "output", out)}
+                onDoubleClick={() => onPortDoubleClick && onPortDoubleClick(module.id, "output", out)}
                 onContextMenu={(e) => onPortRightClick && onPortRightClick(e, module.id, "output", out)}
                 data-port="true"
-                title="Click: connect • Right-click: add wire"
+                title="Click: connect • Double-click: release cable • Right-click: add wire"
               />
               <span style={{ fontSize: 7, color: "#666", fontFamily: "'JetBrains Mono', monospace" }}>{out}</span>
             </div>
@@ -2263,46 +2265,130 @@ function DesignView({ onSendToPatch }) {
     persistDesigns(savedDesigns.filter((_, i) => i !== idx));
   };
 
-  // ─── RANDOM MODULE MAKER ────────────────────────────────────────────────
-  const generateRandomModule = () => {
-    const catKeys = Object.keys(SUBCIRCUIT_LIBRARY);
-    const names1 = ["HYPER", "MEGA", "DARK", "NEON", "VOID", "FLUX", "PULSE", "DRIFT", "HAZE", "GRIT", "SOLAR", "PHASE", "CRYO", "SURGE"];
-    const names2 = ["WAVE", "FILTER", "DRONE", "SYNTH", "SHAPER", "VOICE", "TONE", "BASS", "LEAD", "PAD", "NOISE", "ENGINE", "CORE", "BOX"];
-    const rName = names1[Math.floor(Math.random() * names1.length)] + " " + names2[Math.floor(Math.random() * names2.length)];
-    setModuleName(rName);
+  // ─── RANDOM MODULE MAKER (category-based) ────────────────────────────
+  const [randomCategory, setRandomCategory] = useState("random");
 
-    // Pick 2-5 random blocks from different categories
-    const numBlocks = 2 + Math.floor(Math.random() * 4);
-    const shuffled = [...catKeys].sort(() => Math.random() - 0.5);
-    const newBlocks = [];
-    for (let i = 0; i < numBlocks && i < shuffled.length; i++) {
-      const catKey = shuffled[i];
-      const cat = SUBCIRCUIT_LIBRARY[catKey];
-      const blockKeys = Object.keys(cat.blocks);
-      const blockKey = blockKeys[Math.floor(Math.random() * blockKeys.length)];
-      const block = cat.blocks[blockKey];
-      const id = `blk_${nextBlockId.current++}`;
-      newBlocks.push({
-        id, catKey, blockKey,
-        x: mode === "canvas" ? 80 + (i % 4) * 180 : i * 200,
-        y: mode === "canvas" ? 60 + Math.floor(i / 4) * 140 : 0,
-        data: block, catColor: cat.color,
+  const generateRandomModule = (category) => {
+    const cat = category || randomCategory;
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const pickN = (arr, n) => [...arr].sort(() => Math.random() - 0.5).slice(0, n);
+
+    // Name generators per category
+    const nameBank = {
+      oscillator: { a: ["HYPER", "DARK", "NEON", "SOLAR", "CRYO", "FAT", "WARM", "ANALOG", "DUAL", "POLY"], b: ["VOICE", "WAVE", "DRONE", "SYNTH", "TONE", "PAD", "BASS", "LEAD", "KEYS", "OSC"] },
+      filter: { a: ["SILK", "GRIT", "ACID", "HAZE", "MIST", "DARK", "WARM", "SHARP", "DEEP", "LIQUID"], b: ["FILTER", "SHAPER", "SCULPT", "SWEEP", "WASH", "MORPH", "CUT", "CARVE", "FORMANT", "TONE"] },
+      utility: { a: ["FLUX", "MULTI", "TOOL", "SWIFT", "MICRO", "DUAL", "QUAD", "META", "OMNI", "MODULAR"], b: ["MATH", "UTIL", "MIX", "ROUTE", "LOGIC", "BRIDGE", "LINK", "PROC", "CTRL", "MERGE"] },
+      sequencer: { a: ["STEP", "PULSE", "METRO", "BEAT", "GRID", "PHASE", "CYCLE", "LOOP", "RHYTHM", "PATTERN"], b: ["SEQ", "MACHINE", "PATTERN", "CLOCK", "ENGINE", "DRIVER", "GROOVE", "MATRIX", "CHAIN", "TRIGGER"] },
+      random: { a: ["HYPER", "MEGA", "DARK", "NEON", "VOID", "FLUX", "PULSE", "DRIFT", "HAZE", "GRIT", "SOLAR", "PHASE", "CRYO", "SURGE"], b: ["WAVE", "FILTER", "DRONE", "SYNTH", "SHAPER", "VOICE", "TONE", "BASS", "LEAD", "PAD", "NOISE", "ENGINE", "CORE", "BOX"] },
+    };
+    const nb = nameBank[cat] || nameBank.random;
+    setModuleName(pick(nb.a) + " " + pick(nb.b));
+
+    const lib = SUBCIRCUIT_LIBRARY;
+    let blockDefs = []; // Array of { catKey, blockKey }
+
+    if (cat === "oscillator") {
+      // 1-2 oscillators, optionally add filter, envelope, VCA
+      const oscBlocks = Object.keys(lib.oscillator.blocks);
+      const numOsc = Math.random() > 0.5 ? 2 : 1;
+      for (let i = 0; i < numOsc; i++) blockDefs.push({ catKey: "oscillator", blockKey: pick(oscBlocks) });
+      // 70% chance of filter
+      if (Math.random() < 0.7) {
+        const filterBlocks = Object.keys(lib.filter.blocks);
+        blockDefs.push({ catKey: "filter", blockKey: pick(filterBlocks) });
+      }
+      // 60% chance of envelope
+      if (Math.random() < 0.6) {
+        const envBlocks = Object.keys(lib.envelope.blocks);
+        blockDefs.push({ catKey: "envelope", blockKey: pick(envBlocks) });
+      }
+      // 50% chance of VCA
+      if (Math.random() < 0.5) {
+        const ampBlocks = Object.keys(lib.amplifier.blocks);
+        blockDefs.push({ catKey: "amplifier", blockKey: pick(ampBlocks) });
+      }
+
+    } else if (cat === "filter") {
+      // 1-2 filters, input buffer, maybe VCA or envelope for ducking
+      if (Math.random() < 0.5) blockDefs.push({ catKey: "utility", blockKey: "input_buffer" });
+      const filterBlocks = Object.keys(lib.filter.blocks);
+      const numFilt = Math.random() > 0.6 ? 2 : 1;
+      for (let i = 0; i < numFilt; i++) blockDefs.push({ catKey: "filter", blockKey: pick(filterBlocks) });
+      // Maybe a modulation source for filter FM
+      if (Math.random() < 0.5) {
+        blockDefs.push({ catKey: "modulation", blockKey: pick(Object.keys(lib.modulation.blocks)) });
+      }
+      // Maybe VCA at end
+      if (Math.random() < 0.4) {
+        blockDefs.push({ catKey: "amplifier", blockKey: pick(Object.keys(lib.amplifier.blocks)) });
+      }
+      blockDefs.push({ catKey: "utility", blockKey: "output_buffer" });
+
+    } else if (cat === "utility") {
+      // Mix of utility, modulation, amplifier — 3-5 blocks
+      const utilBlocks = Object.keys(lib.utility.blocks);
+      const modBlocks = Object.keys(lib.modulation.blocks);
+      const ampBlocks = Object.keys(lib.amplifier.blocks);
+      const allUtil = [
+        ...utilBlocks.map(k => ({ catKey: "utility", blockKey: k })),
+        ...modBlocks.map(k => ({ catKey: "modulation", blockKey: k })),
+        ...ampBlocks.map(k => ({ catKey: "amplifier", blockKey: k })),
+      ];
+      const n = 3 + Math.floor(Math.random() * 3);
+      blockDefs = pickN(allUtil, Math.min(n, allUtil.length));
+
+    } else if (cat === "sequencer") {
+      // Sequencer + quantizer, maybe clock, maybe envelope for gate shaping
+      blockDefs.push({ catKey: "digital", blockKey: "sequencer_8step" });
+      // 70% add quantizer
+      if (Math.random() < 0.7) blockDefs.push({ catKey: "digital", blockKey: "quantizer" });
+      // 50% add envelope for gate-to-envelope
+      if (Math.random() < 0.5) blockDefs.push({ catKey: "envelope", blockKey: pick(Object.keys(lib.envelope.blocks)) });
+      // 40% add a modulation source
+      if (Math.random() < 0.4) blockDefs.push({ catKey: "modulation", blockKey: pick(Object.keys(lib.modulation.blocks)) });
+
+    } else {
+      // Full random — original behavior
+      const catKeys = Object.keys(lib).filter(k => k !== "power");
+      const numBlocks = 2 + Math.floor(Math.random() * 4);
+      const shuffled = pickN(catKeys, numBlocks);
+      shuffled.forEach(catKey => {
+        const blockKeys = Object.keys(lib[catKey].blocks);
+        blockDefs.push({ catKey, blockKey: pick(blockKeys) });
       });
     }
+
+    // Build placed blocks
+    const newBlocks = blockDefs.map((def, i) => {
+      const c = lib[def.catKey];
+      const block = c?.blocks[def.blockKey];
+      if (!c || !block) return null;
+      const id = `blk_${nextBlockId.current++}`;
+      return {
+        id, catKey: def.catKey, blockKey: def.blockKey,
+        x: mode === "canvas" ? 80 + (i % 4) * 180 : i * 200,
+        y: mode === "canvas" ? 60 + Math.floor(i / 4) * 140 : 0,
+        data: block, catColor: c.color,
+      };
+    }).filter(Boolean);
     setPlacedBlocks(newBlocks);
 
-    // Auto-wire: connect outputs to inputs of next block where compatible
+    // Smart auto-wire: connect outputs→inputs of next block
     const newWires = [];
     for (let i = 0; i < newBlocks.length - 1; i++) {
       const from = newBlocks[i];
       const to = newBlocks[i + 1];
       if (from.data.outputs.length > 0 && to.data.inputs.length > 0) {
-        newWires.push({
-          fromBlock: from.id,
-          fromPort: from.data.outputs[0],
-          toBlock: to.id,
-          toPort: to.data.inputs[0],
-        });
+        // Try to find best matching ports
+        let fromPort = from.data.outputs[0];
+        let toPort = to.data.inputs[0];
+        // Prefer "Out" or main output
+        const mainOut = from.data.outputs.find(p => /Out|LP|Tri|Saw|Env|CV/.test(p));
+        if (mainOut) fromPort = mainOut;
+        // Prefer "In" as input
+        const mainIn = to.data.inputs.find(p => /^In$|Signal/.test(p));
+        if (mainIn) toPort = mainIn;
+        newWires.push({ fromBlock: from.id, fromPort, toBlock: to.id, toPort });
       }
     }
     setWires(newWires);
@@ -2503,16 +2589,38 @@ function DesignView({ onSendToPatch }) {
           </div>
         </div>
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap", alignItems: "center" }}>
-          {/* Random */}
-          <button onClick={generateRandomModule} style={{
-            background: "linear-gradient(135deg, #e74c3c22, #3498db22, #2ecc7122)",
-            color: "#ddd", border: "1px solid #444",
-            borderRadius: 3, padding: "5px 10px", fontSize: 9, fontWeight: 700,
-            letterSpacing: 1, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
-          }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = "#888"}
-            onMouseLeave={e => e.currentTarget.style.borderColor = "#444"}
-          >🎲 RANDOM</button>
+          {/* Random category selector + generate */}
+          <div style={{ display: "flex", gap: 0, alignItems: "center" }}>
+            <select
+              value={randomCategory}
+              onChange={e => setRandomCategory(e.target.value)}
+              style={{
+                background: "#111", color: "#ddd", border: "1px solid #444",
+                borderRight: "none", borderRadius: "3px 0 0 3px",
+                padding: "5px 6px", fontSize: 9, fontWeight: 700,
+                letterSpacing: 1, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
+                appearance: "none", WebkitAppearance: "none",
+                backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23666'/%3E%3C/svg%3E\")",
+                backgroundRepeat: "no-repeat", backgroundPosition: "right 4px center",
+                paddingRight: 16, minWidth: 95,
+              }}
+            >
+              <option value="oscillator">◊ OSCILLATOR</option>
+              <option value="filter">≋ FILTER</option>
+              <option value="utility">⊞ UTILITY</option>
+              <option value="sequencer">▦ SEQUENCER</option>
+              <option value="random">⚄ FULL RANDOM</option>
+            </select>
+            <button onClick={() => generateRandomModule()} style={{
+              background: "linear-gradient(135deg, #e74c3c22, #3498db22, #2ecc7122)",
+              color: "#ddd", border: "1px solid #444",
+              borderRadius: "0 3px 3px 0", padding: "5px 10px", fontSize: 9, fontWeight: 700,
+              letterSpacing: 1, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
+            }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = "#888"}
+              onMouseLeave={e => e.currentTarget.style.borderColor = "#444"}
+            >🎲 GENERATE</button>
+          </div>
           {/* Save */}
           <button onClick={saveCurrentDesign} disabled={placedBlocks.length === 0} style={{
             background: placedBlocks.length > 0 ? "#2ecc7115" : "#111",
@@ -4940,6 +5048,46 @@ function EurorackPrototyper() {
     setActivePort({ moduleId, type, port });
   };
 
+  // ─── DOUBLE-CLICK ON PORT → RELEASE CABLE & REDRAW FROM OTHER END ─────
+  const onPortDoubleClick = (moduleId, type, port) => {
+    // Find connections attached to this port
+    const attached = connections.filter(c =>
+      (type === "input" && c.toId === moduleId && c.toPort === port) ||
+      (type === "output" && c.fromId === moduleId && c.fromPort === port)
+    );
+    if (attached.length === 0) return;
+
+    // Take the most recent connection on this port
+    const conn = attached[attached.length - 1];
+
+    // Disconnect it from audio engine
+    if (engineRef.current) {
+      engineRef.current.disconnect(conn.fromId, conn.toId, conn.toPort, conn.fromPort);
+    }
+
+    // Remove from connections list
+    setConnections(prev => prev.filter(c =>
+      !(c.fromId === conn.fromId && c.fromPort === conn.fromPort && c.toId === conn.toId && c.toPort === conn.toPort)
+    ));
+
+    // Start drawing a new wire from the OTHER end (the end that wasn't double-clicked)
+    const otherModuleId = type === "input" ? conn.fromId : conn.toId;
+    const otherPort = type === "input" ? conn.fromPort : conn.toPort;
+    const otherType = type === "input" ? "output" : "input";
+    const portEl = document.getElementById(`port-${otherModuleId}-${otherType}-${otherPort.replace(/\s/g, "_")}`);
+    const rect = patchAreaRef.current?.getBoundingClientRect();
+    let startX = 0, startY = 0;
+    if (rect && portEl) {
+      const pRect = portEl.getBoundingClientRect();
+      startX = (pRect.left + pRect.width / 2 - rect.left) / zoom;
+      startY = (pRect.top + pRect.height / 2 - rect.top) / zoom;
+    }
+    const wire = { moduleId: otherModuleId, type: otherType, port: otherPort, x: startX, y: startY, startX, startY };
+    setDrawingWire(wire);
+    drawingWireRef.current = wire;
+    setActivePort({ moduleId: otherModuleId, type: otherType, port: otherPort });
+  };
+
   // ─── REMOVE SINGLE CONNECTION ──────────────────────────────────────────────
   const removeConnection = (idx) => {
     const conn = connections[idx];
@@ -5215,7 +5363,7 @@ function EurorackPrototyper() {
             }}>
               <span style={{ fontSize: 14 }}>⚡</span>
               <span>
-                Drawing wire from <strong style={{ color: "#fff" }}>{drawingWire.moduleId}</strong>:{drawingWire.port}
+                Drawing wire from <strong style={{ color: "#fff" }}>{(() => { const m = allModules.find(mod => mod.id === drawingWire.moduleId); return m ? (m.type.startsWith("CUSTOM_") ? m.type.replace("CUSTOM_","") : m.type) : drawingWire.moduleId; })()}</strong>:{drawingWire.port}
                 — click a {drawingWire.type === "output" ? "input" : "output"} port to connect
               </span>
               <button onClick={cancelDrawingWire} style={{
@@ -5223,6 +5371,16 @@ function EurorackPrototyper() {
                 color: "#f39c12", borderRadius: 3, padding: "2px 8px", cursor: "pointer",
                 fontSize: 9, fontFamily: "'JetBrains Mono', monospace",
               }}>ESC</button>
+            </div>
+          )}
+
+          {/* Interaction hints — always visible when no wire is drawing */}
+          {!drawingWire && connections.length > 0 && (
+            <div style={{
+              fontSize: 9, color: "#333", marginBottom: 8, letterSpacing: 0.5,
+              fontFamily: "'JetBrains Mono', monospace",
+            }}>
+              💡 <span style={{ color: "#555" }}>Double-click</span> a connected port to release its cable and re-patch it
             </div>
           )}
 
@@ -5421,6 +5579,7 @@ function EurorackPrototyper() {
                     onParamChange={onParamChange}
                     onRemove={removeModule}
                     onPortClick={onPortClick}
+                    onPortDoubleClick={onPortDoubleClick}
                     onPortRightClick={onPortRightClick}
                     activePort={activePort}
                     connections={connections}
@@ -5435,6 +5594,7 @@ function EurorackPrototyper() {
                 onParamChange={onParamChange}
                 onRemove={() => {}}
                 onPortClick={onPortClick}
+                onPortDoubleClick={onPortDoubleClick}
                 onPortRightClick={onPortRightClick}
                 activePort={activePort}
                 connections={connections}
@@ -5452,7 +5612,7 @@ function EurorackPrototyper() {
               <div style={{ fontSize: 12, letterSpacing: 2 }}>ADD MODULES TO START PATCHING</div>
               <div style={{ fontSize: 10, color: "#333", marginTop: 8, lineHeight: 1.8 }}>
                 Click module buttons above → connect ports by clicking output then input → start audio to hear it<br/>
-                Click a port to start a wire, then click a compatible port to connect • Right-click a port to add another wire • Remove cables from the patch list above
+                Click a port to start a wire, then click a compatible port to connect • Double-click a connected port to release and re-patch • Right-click to add another wire
               </div>
             </div>
           )}
