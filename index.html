@@ -2856,128 +2856,146 @@ function DesignView({ onSendToPatch }) {
               {outputTab === "schematic" && (
                 <div style={{
                   background: "#0d0d0d", border: "1px solid #1a1a1a", borderRadius: 6, padding: 16,
-                  overflowX: "auto",
                 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#fff", letterSpacing: 1, marginBottom: 12 }}>
-                    {moduleName} — MERGED SCHEMATIC
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#fff", letterSpacing: 1 }}>
+                      {moduleName} — MERGED SCHEMATIC
+                    </div>
+                    <button
+                      onClick={() => {
+                        const svgEl = document.getElementById("merged-schematic-svg");
+                        if (!svgEl) return;
+                        const clone = svgEl.cloneNode(true);
+                        const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                        bg.setAttribute("width", "100%"); bg.setAttribute("height", "100%");
+                        bg.setAttribute("fill", "#0d0d0d");
+                        clone.insertBefore(bg, clone.firstChild);
+                        const svgData = new XMLSerializer().serializeToString(clone);
+                        const blob = new Blob([svgData], { type: "image/svg+xml" });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url; a.download = `${moduleName.replace(/\s/g, "_")}_schematic.svg`;
+                        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                      }}
+                      style={{
+                        background: "#2ecc7115", color: "#2ecc71", border: "1px solid #2ecc7144",
+                        borderRadius: 3, padding: "4px 12px", fontSize: 9, fontWeight: 700,
+                        letterSpacing: 1, cursor: "pointer", fontFamily: "'JetBrains Mono', monospace",
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "#2ecc7133"; e.currentTarget.style.borderColor = "#2ecc71"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "#2ecc7115"; e.currentTarget.style.borderColor = "#2ecc7144"; }}
+                    >⬇ EXPORT SVG</button>
                   </div>
                   {(() => {
-                    const blockW = 300;
-                    const leftPad = 70;
-                    const rightPad = 80;
-                    const totalW = Math.max(700, leftPad + placedBlocks.length * blockW + rightPad);
+                    const blockW = 320;
+                    const leftPad = 80;
+                    const rightPad = 100;
+                    const totalW = Math.max(800, leftPad + placedBlocks.length * blockW + rightPad);
+
+                    const labelZoneH = 28;
+                    const schematicZoneH = 150;
                     const maxPorts = Math.max(...placedBlocks.map(b => Math.max(b.data.inputs.length, b.data.outputs.length)), 1);
-                    const maxControls = Math.max(...placedBlocks.map(b => b.data.controls.length), 0);
-                    const portRowH = 32;
-                    const schematicZoneH = 100; // fixed zone for schematicFn content
+                    const portRowH = 40;
                     const portsZoneH = maxPorts * portRowH;
-                    const ctlZoneH = maxControls > 0 ? 60 : 0;
-                    const boxContentH = schematicZoneH + portsZoneH + ctlZoneH + 20;
-                    const totalH = Math.max(460, 120 + boxContentH + 80);
-                    const railY = 42;
-                    const gndY = totalH - 55;
-                    const blockTopY = 75;
+                    const maxControls = Math.max(...placedBlocks.map(b => b.data.controls.length), 0);
+                    const ctlZoneH = maxControls > 0 ? 80 : 0;
+                    const boxH = schematicZoneH + portsZoneH + ctlZoneH + 10;
+                    const totalH = Math.max(560, 100 + labelZoneH + boxH + 110);
+
+                    const railY = 48;
+                    const gndY = totalH - 65;
+                    const labelY = 84;
+                    const boxTopY = labelY + labelZoneH;
 
                     return (
-                      <div style={{ minWidth: totalW }}>
+                      <div style={{ overflowX: "auto", overflowY: "auto", maxHeight: 720, borderRadius: 4 }}>
                       <svg
+                        id="merged-schematic-svg"
                         viewBox={`0 0 ${totalW} ${totalH}`}
                         width={totalW}
                         height={totalH}
-                        style={{ maxWidth: "100%", height: "auto", display: "block" }}
-                        dangerouslySetInnerHTML={{
+                        style={{ display: "block", minWidth: totalW }}
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <style>{`text { font-family: 'JetBrains Mono', 'Courier New', monospace; }`}</style>
+                        <g dangerouslySetInnerHTML={{
                           __html: (() => {
                             let svg = "";
-                            const railEndX = leftPad + placedBlocks.length * blockW + 20;
-                            // +12V rail
-                            svg += S.power(leftPad, railY - 22, "+12V");
-                            svg += S.wire(leftPad, railY - 16, leftPad, railY);
+                            const railEndX = leftPad + placedBlocks.length * blockW + 30;
+
+                            svg += S.power(leftPad, railY - 24, "+12V");
+                            svg += S.wire(leftPad, railY - 18, leftPad, railY);
                             svg += S.wire(leftPad, railY, railEndX, railY);
                             svg += S.label(railEndX / 2, railY - 10, "+12V RAIL", 7, "#e74c3c");
-                            // GND rail
+
                             svg += S.wire(leftPad, gndY, railEndX, gndY);
-                            svg += S.label(railEndX / 2, gndY + 14, "GND RAIL", 7, "#666");
+                            svg += S.label(railEndX / 2, gndY + 16, "GND RAIL", 7, "#666");
                             svg += S.ground(railEndX, gndY);
-                            // Power header
-                            svg += S.header(30, gndY + 22, 10);
+                            svg += S.header(30, gndY + 26, 10);
 
                             let refCounter = 1;
                             placedBlocks.forEach((block, idx) => {
                               const bx = leftPad + idx * blockW;
-                              const by = blockTopY;
-                              const numIn = block.data.inputs.length;
-                              const numOut = block.data.outputs.length;
-                              const numCtl = block.data.controls.length;
-                              const thisPortsH = Math.max(numIn, numOut) * portRowH;
-                              const thisCtlH = numCtl > 0 ? 60 : 0;
-                              const boxW = blockW - 40;
-                              const boxH = schematicZoneH + thisPortsH + thisCtlH + 20;
+                              const boxW = blockW - 50;
                               const centerX = bx + boxW / 2;
 
-                              // Block label above the box
-                              svg += S.label(centerX, by - 8, block.data.label, 9, block.catColor);
+                              svg += S.label(centerX, labelY, block.data.label, 9, block.catColor);
 
-                              // Block boundary box
-                              svg += `<rect x="${bx}" y="${by}" width="${boxW}" height="${boxH}" fill="${block.catColor}06" stroke="${block.catColor}30" stroke-width="1" stroke-dasharray="5 3" rx="4"/>`;
+                              svg += `<rect x="${bx}" y="${boxTopY}" width="${boxW}" height="${boxH}" fill="${block.catColor}06" stroke="${block.catColor}28" stroke-width="1" stroke-dasharray="5 3" rx="4"/>`;
 
-                              // Power tap line from rail to box top
-                              svg += S.wire(centerX, railY, centerX, by);
+                              svg += S.wire(centerX, railY, centerX, boxTopY);
                               svg += S.dot(centerX, railY, "#e74c3c");
 
-                              // Decoupling cap — right side of power tap, inside box top
-                              svg += S.capacitor(centerX + 35, by + 12, false, `C${refCounter}`, "100nF");
+                              svg += S.capacitor(centerX + 55, boxTopY + 16, false, `C${refCounter}`, "100nF");
                               refCounter++;
 
-                              // Schematic content zone — starts inside box
                               if (block.data.schematicFn) {
-                                svg += block.data.schematicFn(bx + 25, by + 22);
+                                svg += block.data.schematicFn(bx + 30, boxTopY + 24);
                               }
 
-                              // Input jacks — left edge of box
-                              const jackStartY = by + schematicZoneH + 10;
+                              const jackZoneY = boxTopY + schematicZoneH;
+
                               block.data.inputs.forEach((inp, i) => {
-                                svg += S.jack(bx + 2, jackStartY + i * portRowH, inp, true);
+                                svg += S.jack(bx + 12, jackZoneY + i * portRowH + portRowH / 2, inp, true);
                               });
-
-                              // Output jacks — right edge of box
                               block.data.outputs.forEach((out, i) => {
-                                svg += S.jack(bx + boxW - 2, jackStartY + i * portRowH, out, false);
+                                svg += S.jack(bx + boxW - 12, jackZoneY + i * portRowH + portRowH / 2, out, false);
                               });
 
-                              // Control pots — bottom of box
+                              const numCtl = block.data.controls.length;
                               if (numCtl > 0) {
-                                const ctlY = jackStartY + thisPortsH + 15;
-                                const ctlSpace = Math.min(80, (boxW - 60) / Math.max(numCtl, 1));
+                                const ctlY = jackZoneY + portsZoneH + 30;
+                                const ctlSpace = Math.min(100, (boxW - 80) / Math.max(numCtl, 1));
                                 const ctlStartX = centerX - ((numCtl - 1) * ctlSpace / 2);
                                 block.data.controls.forEach((ctl, i) => {
                                   svg += S.pot(ctlStartX + i * ctlSpace, ctlY, ctl, "100k");
                                 });
                               }
 
-                              // GND tap
-                              svg += S.wire(centerX, by + boxH, centerX, gndY);
+                              svg += S.wire(centerX, boxTopY + boxH, centerX, gndY);
                               svg += S.dot(centerX, gndY);
                             });
 
-                            // Wire connections between blocks
                             wires.forEach(w => {
                               const fi = placedBlocks.findIndex(b => b.id === w.fromBlock);
                               const ti = placedBlocks.findIndex(b => b.id === w.toBlock);
                               if (fi < 0 || ti < 0) return;
                               const fpIdx = placedBlocks[fi].data.outputs.indexOf(w.fromPort);
                               const tpIdx = placedBlocks[ti].data.inputs.indexOf(w.toPort);
-                              const jackStartY = blockTopY + schematicZoneH + 10;
-                              const fBoxW = blockW - 40;
-                              const x1 = leftPad + fi * blockW + fBoxW + 6;
-                              const y1 = jackStartY + (fpIdx >= 0 ? fpIdx : 0) * portRowH;
-                              const x2 = leftPad + ti * blockW - 6;
-                              const y2 = jackStartY + (tpIdx >= 0 ? tpIdx : 0) * portRowH;
-                              svg += `<path d="M ${x1} ${y1} C ${x1 + 30} ${y1}, ${x2 - 30} ${y2}, ${x2} ${y2}" fill="none" stroke="${placedBlocks[fi].catColor}" stroke-width="1.5" opacity="0.45"/>`;
+                              const fBoxW = blockW - 50;
+                              const jackZoneY = boxTopY + schematicZoneH;
+                              const x1 = leftPad + fi * blockW + fBoxW;
+                              const y1 = jackZoneY + (fpIdx >= 0 ? fpIdx : 0) * portRowH + portRowH / 2;
+                              const x2 = leftPad + ti * blockW;
+                              const y2 = jackZoneY + (tpIdx >= 0 ? tpIdx : 0) * portRowH + portRowH / 2;
+                              svg += `<path d="M ${x1} ${y1} C ${x1 + 40} ${y1}, ${x2 - 40} ${y2}, ${x2} ${y2}" fill="none" stroke="${placedBlocks[fi].catColor}" stroke-width="1.5" opacity="0.4"/>`;
                             });
+
                             return svg;
                           })(),
-                        }}
-                      />
+                        }} />
+                      </svg>
                       </div>
                     );
                   })()}
