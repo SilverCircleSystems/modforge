@@ -24,7 +24,6 @@
 const { useState, useEffect, useRef, useCallback } = React;
 
 
-
 // ─── BOM DATABASE ────────────────────────────────────────────────────────────
 const COMPONENT_BOM = {
   VCO: {
@@ -2857,98 +2856,107 @@ function DesignView({ onSendToPatch }) {
               {outputTab === "schematic" && (
                 <div style={{
                   background: "#0d0d0d", border: "1px solid #1a1a1a", borderRadius: 6, padding: 16,
+                  overflowX: "auto",
                 }}>
                   <div style={{ fontSize: 11, fontWeight: 700, color: "#fff", letterSpacing: 1, marginBottom: 12 }}>
                     {moduleName} — MERGED SCHEMATIC
                   </div>
                   {(() => {
-                    // Calculate dynamic dimensions based on block count and complexity
-                    const blockW = 240; // Width per block column
-                    const totalW = Math.max(700, placedBlocks.length * blockW + 120);
-                    // Height based on max ports per block
+                    const blockW = 300;
+                    const leftPad = 70;
+                    const rightPad = 80;
+                    const totalW = Math.max(700, leftPad + placedBlocks.length * blockW + rightPad);
                     const maxPorts = Math.max(...placedBlocks.map(b => Math.max(b.data.inputs.length, b.data.outputs.length)), 1);
                     const maxControls = Math.max(...placedBlocks.map(b => b.data.controls.length), 0);
-                    const blockContentH = 80 + maxPorts * 28 + (maxControls > 0 ? 50 : 0);
-                    const totalH = Math.max(400, 100 + blockContentH + 80);
-                    const railY = 40; // +12V rail Y
-                    const gndY = totalH - 50; // GND rail Y
-                    const blockStartY = 85; // Where blocks begin
+                    const portRowH = 32;
+                    const schematicZoneH = 100; // fixed zone for schematicFn content
+                    const portsZoneH = maxPorts * portRowH;
+                    const ctlZoneH = maxControls > 0 ? 60 : 0;
+                    const boxContentH = schematicZoneH + portsZoneH + ctlZoneH + 20;
+                    const totalH = Math.max(460, 120 + boxContentH + 80);
+                    const railY = 42;
+                    const gndY = totalH - 55;
+                    const blockTopY = 75;
 
                     return (
+                      <div style={{ minWidth: totalW }}>
                       <svg
                         viewBox={`0 0 ${totalW} ${totalH}`}
                         width={totalW}
                         height={totalH}
-                        style={{ maxWidth: "100%", height: "auto" }}
+                        style={{ maxWidth: "100%", height: "auto", display: "block" }}
                         dangerouslySetInnerHTML={{
                           __html: (() => {
                             let svg = "";
-                            const railEndX = Math.max(600, placedBlocks.length * blockW + 40);
+                            const railEndX = leftPad + placedBlocks.length * blockW + 20;
                             // +12V rail
-                            svg += S.power(50, railY - 20, "+12V");
-                            svg += S.wire(50, railY - 14, 50, railY);
-                            svg += S.wire(50, railY, railEndX, railY);
-                            svg += S.label(railEndX / 2, railY - 8, "+12V RAIL", 7, "#e74c3c");
+                            svg += S.power(leftPad, railY - 22, "+12V");
+                            svg += S.wire(leftPad, railY - 16, leftPad, railY);
+                            svg += S.wire(leftPad, railY, railEndX, railY);
+                            svg += S.label(railEndX / 2, railY - 10, "+12V RAIL", 7, "#e74c3c");
                             // GND rail
-                            svg += S.wire(50, gndY, railEndX, gndY);
-                            svg += S.label(railEndX / 2, gndY + 12, "GND RAIL", 7, "#666");
+                            svg += S.wire(leftPad, gndY, railEndX, gndY);
+                            svg += S.label(railEndX / 2, gndY + 14, "GND RAIL", 7, "#666");
                             svg += S.ground(railEndX, gndY);
                             // Power header
-                            svg += S.header(30, gndY + 20, 10);
+                            svg += S.header(30, gndY + 22, 10);
 
                             let refCounter = 1;
                             placedBlocks.forEach((block, idx) => {
-                              const bx = 70 + idx * blockW;
-                              const by = blockStartY;
+                              const bx = leftPad + idx * blockW;
+                              const by = blockTopY;
                               const numIn = block.data.inputs.length;
                               const numOut = block.data.outputs.length;
                               const numCtl = block.data.controls.length;
-                              const portsH = Math.max(numIn, numOut) * 28;
-                              const ctlH = numCtl > 0 ? 50 : 0;
-                              const boxH = 60 + portsH + ctlH;
-                              const boxW = blockW - 30;
+                              const thisPortsH = Math.max(numIn, numOut) * portRowH;
+                              const thisCtlH = numCtl > 0 ? 60 : 0;
+                              const boxW = blockW - 40;
+                              const boxH = schematicZoneH + thisPortsH + thisCtlH + 20;
+                              const centerX = bx + boxW / 2;
 
-                              // Block boundary
-                              svg += `<rect x="${bx - 10}" y="${by - 18}" width="${boxW}" height="${boxH}" fill="${block.catColor}05" stroke="${block.catColor}33" stroke-width="1" stroke-dasharray="4" rx="4"/>`;
-                              svg += S.label(bx + boxW / 2 - 10, by - 6, block.data.label, 8, block.catColor);
+                              // Block label above the box
+                              svg += S.label(centerX, by - 8, block.data.label, 9, block.catColor);
 
-                              // Power tap
-                              svg += S.wire(bx + boxW / 2 - 10, railY, bx + boxW / 2 - 10, by);
-                              svg += S.dot(bx + boxW / 2 - 10, railY, "#e74c3c");
-                              // Decoupling cap (positioned away from label)
-                              svg += S.capacitor(bx + boxW / 2 + 20, by + 8, false, `C${refCounter}`, "100nF");
+                              // Block boundary box
+                              svg += `<rect x="${bx}" y="${by}" width="${boxW}" height="${boxH}" fill="${block.catColor}06" stroke="${block.catColor}30" stroke-width="1" stroke-dasharray="5 3" rx="4"/>`;
+
+                              // Power tap line from rail to box top
+                              svg += S.wire(centerX, railY, centerX, by);
+                              svg += S.dot(centerX, railY, "#e74c3c");
+
+                              // Decoupling cap — right side of power tap, inside box top
+                              svg += S.capacitor(centerX + 35, by + 12, false, `C${refCounter}`, "100nF");
                               refCounter++;
 
-                              // Schematic content — centered in block
+                              // Schematic content zone — starts inside box
                               if (block.data.schematicFn) {
-                                svg += block.data.schematicFn(bx + 20, by + 25);
+                                svg += block.data.schematicFn(bx + 25, by + 22);
                               }
 
-                              // Input jacks — stacked on the left edge
+                              // Input jacks — left edge of box
+                              const jackStartY = by + schematicZoneH + 10;
                               block.data.inputs.forEach((inp, i) => {
-                                const jy = by + 45 + i * 28;
-                                svg += S.jack(bx - 8, jy, inp, true);
+                                svg += S.jack(bx + 2, jackStartY + i * portRowH, inp, true);
                               });
 
-                              // Output jacks — stacked on the right edge
+                              // Output jacks — right edge of box
                               block.data.outputs.forEach((out, i) => {
-                                const jy = by + 45 + i * 28;
-                                svg += S.jack(bx + boxW - 10, jy, out, false);
+                                svg += S.jack(bx + boxW - 2, jackStartY + i * portRowH, out, false);
                               });
 
-                              // Control pots — spaced below schematic content
+                              // Control pots — bottom of box
                               if (numCtl > 0) {
-                                const ctlY = by + 45 + portsH + 5;
-                                const ctlSpacing = Math.min(70, (boxW - 20) / numCtl);
-                                const ctlStartX = bx + (boxW / 2) - ((numCtl - 1) * ctlSpacing / 2) - 10;
+                                const ctlY = jackStartY + thisPortsH + 15;
+                                const ctlSpace = Math.min(80, (boxW - 60) / Math.max(numCtl, 1));
+                                const ctlStartX = centerX - ((numCtl - 1) * ctlSpace / 2);
                                 block.data.controls.forEach((ctl, i) => {
-                                  svg += S.pot(ctlStartX + i * ctlSpacing, ctlY, ctl, "100k");
+                                  svg += S.pot(ctlStartX + i * ctlSpace, ctlY, ctl, "100k");
                                 });
                               }
 
                               // GND tap
-                              svg += S.wire(bx + boxW / 2 - 10, by + boxH - 18, bx + boxW / 2 - 10, gndY);
-                              svg += S.dot(bx + boxW / 2 - 10, gndY);
+                              svg += S.wire(centerX, by + boxH, centerX, gndY);
+                              svg += S.dot(centerX, gndY);
                             });
 
                             // Wire connections between blocks
@@ -2958,17 +2966,19 @@ function DesignView({ onSendToPatch }) {
                               if (fi < 0 || ti < 0) return;
                               const fpIdx = placedBlocks[fi].data.outputs.indexOf(w.fromPort);
                               const tpIdx = placedBlocks[ti].data.inputs.indexOf(w.toPort);
-                              const fBoxW = blockW - 30;
-                              const x1 = 70 + fi * blockW + fBoxW - 2;
-                              const y1 = blockStartY + 45 + (fpIdx >= 0 ? fpIdx : 0) * 28;
-                              const x2 = 70 + ti * blockW;
-                              const y2 = blockStartY + 45 + (tpIdx >= 0 ? tpIdx : 0) * 28;
-                              svg += `<path d="M ${x1} ${y1} C ${x1 + 25} ${y1}, ${x2 - 25} ${y2}, ${x2} ${y2}" fill="none" stroke="${placedBlocks[fi].catColor}" stroke-width="1.5" opacity="0.5"/>`;
+                              const jackStartY = blockTopY + schematicZoneH + 10;
+                              const fBoxW = blockW - 40;
+                              const x1 = leftPad + fi * blockW + fBoxW + 6;
+                              const y1 = jackStartY + (fpIdx >= 0 ? fpIdx : 0) * portRowH;
+                              const x2 = leftPad + ti * blockW - 6;
+                              const y2 = jackStartY + (tpIdx >= 0 ? tpIdx : 0) * portRowH;
+                              svg += `<path d="M ${x1} ${y1} C ${x1 + 30} ${y1}, ${x2 - 30} ${y2}, ${x2} ${y2}" fill="none" stroke="${placedBlocks[fi].catColor}" stroke-width="1.5" opacity="0.45"/>`;
                             });
                             return svg;
                           })(),
                         }}
                       />
+                      </div>
                     );
                   })()}
                   <div style={{ marginTop: 8, fontSize: 8, color: "#555", lineHeight: 1.6 }}>
@@ -5446,7 +5456,6 @@ function EurorackPrototyper() {
     </div>
   );
 }
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(React.createElement(EurorackPrototyper));
