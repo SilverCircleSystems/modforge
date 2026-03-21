@@ -421,8 +421,14 @@ class AudioEngine {
   }
 
   init() {
-    if (this.ctx) return;
+    if (this.ctx) {
+      // If context exists but is suspended, resume it
+      if (this.ctx.state === "suspended") this.ctx.resume();
+      return;
+    }
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // Explicitly resume — required by browsers after user gesture
+    if (this.ctx.state === "suspended") this.ctx.resume();
     this.masterGain = this.ctx.createGain();
     this.masterGain.gain.value = 0.3;
     this.analyser = this.ctx.createAnalyser();
@@ -1252,7 +1258,7 @@ function ModulePanel({ module, def, onParamChange, onRemove, onPortClick, onPort
       (type === "input" && c.toId === module.id && c.toPort === portName)
     );
     return {
-      width: 14, height: 14,
+      width: 22, height: 22,
       borderRadius: "50%",
       background: isActive ? "#fff" : isConnected ? def.color || "#888" : "#333",
       border: `2px solid ${isActive ? "#fff" : def.color || "#888"}`,
@@ -4850,6 +4856,10 @@ function EurorackPrototyper() {
   const startAudio = () => {
     if (!engineRef.current) return;
     engineRef.current.init();
+    // Ensure AudioContext is running (browser may block without user gesture)
+    if (engineRef.current.ctx && engineRef.current.ctx.state === "suspended") {
+      engineRef.current.ctx.resume();
+    }
     // Recreate all module nodes
     modules.forEach(m => {
       engineRef.current.createModuleNode(m.id, m.type, m.params);
