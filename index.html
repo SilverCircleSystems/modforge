@@ -2503,24 +2503,70 @@ function DesignView({ onSendToPatch }) {
         data: block, catColor: c.color,
       };
     }).filter(Boolean);
+
+    // Sort blocks into a musical signal chain order before placing
+    const catOrder = { oscillator: 0, filter: 1, amplifier: 2, envelope: 3, modulation: 4, utility: 5, digital: 6, power: 7 };
+    newBlocks.sort((a, b) => (catOrder[a.catKey] ?? 5) - (catOrder[b.catKey] ?? 5));
+    // Update x positions after sort
+    newBlocks.forEach((b, i) => {
+      b.x = mode === "canvas" ? 80 + (i % 4) * 180 : i * 200;
+      b.y = mode === "canvas" ? 60 + Math.floor(i / 4) * 140 : 0;
+    });
+
     setPlacedBlocks(newBlocks);
 
-    // Smart auto-wire: connect outputs→inputs of next block
+    // ─── Smart auto-wire with signal-type awareness ───
+    // Define which output ports carry audio vs CV/gate signals
+    const audioOutputs = ["Out", "LP", "BP", "HP", "Saw", "Tri", "Square", "Pulse", "White", "Pink", "Mix", "Buffered", "Jack Out", "Held", "Quantized CV"];
+    const cvOutputs = ["Env", "CV", "Quantized CV", "Out"]; // Env/CV context-dependent
+    const gateOutputs = ["Gate", "Trigger", "Clock", "÷2", "÷4", "Reset"];
+    const audioInputs = ["In", "Signal", "Jack In", "Mono", "L In", "R In", "In 1", "In 2"];
+    const cvInputs = ["CV", "CV In", "FM", "Rate CV", "Pan CV", "V/Oct"];
+    const gateInputs = ["Gate", "Clock", "Clock In", "Sync"];
+
+    function bestConnection(from, to) {
+      const fromOuts = from.data.outputs;
+      const toIns = to.data.inputs;
+      if (fromOuts.length === 0 || toIns.length === 0) return null;
+
+      // Priority 1: Audio output → Audio input
+      const audioOut = fromOuts.find(p => audioOutputs.some(a => p === a || p.includes(a)));
+      const audioIn = toIns.find(p => audioInputs.some(a => p === a));
+      if (audioOut && audioIn) return { fromPort: audioOut, toPort: audioIn };
+
+      // Priority 2: For envelopes/LFOs going to VCA/VCF — CV output → CV input
+      if (from.catKey === "envelope" || from.catKey === "modulation") {
+        const cvOut = fromOuts.find(p => cvOutputs.some(a => p === a || p.includes(a)));
+        const cvIn = toIns.find(p => cvInputs.some(a => p === a));
+        if (cvOut && cvIn) return { fromPort: cvOut, toPort: cvIn };
+      }
+
+      // Priority 3: Digital/sequencer gate → envelope gate
+      if (from.catKey === "digital") {
+        const gOut = fromOuts.find(p => gateOutputs.some(a => p === a));
+        const gIn = toIns.find(p => gateInputs.some(a => p === a));
+        if (gOut && gIn) return { fromPort: gOut, toPort: gIn };
+        // Also try CV out → CV in for sequencer→quantizer
+        const cvO = fromOuts.find(p => p === "CV");
+        const cvI = toIns.find(p => p === "CV In" || p === "In");
+        if (cvO && cvI) return { fromPort: cvO, toPort: cvI };
+      }
+
+      // Fallback: first output → first input (skip CV-only inputs if possible)
+      const safeIn = toIns.find(p => !cvInputs.includes(p) && !gateInputs.includes(p)) || toIns[0];
+      return { fromPort: fromOuts[0], toPort: safeIn };
+    }
+
     const newWires = [];
     for (let i = 0; i < newBlocks.length - 1; i++) {
-      const from = newBlocks[i];
-      const to = newBlocks[i + 1];
-      if (from.data.outputs.length > 0 && to.data.inputs.length > 0) {
-        // Try to find best matching ports
-        let fromPort = from.data.outputs[0];
-        let toPort = to.data.inputs[0];
-        // Prefer "Out" or main output
-        const mainOut = from.data.outputs.find(p => /Out|LP|Tri|Saw|Env|CV/.test(p));
-        if (mainOut) fromPort = mainOut;
-        // Prefer "In" as input
-        const mainIn = to.data.inputs.find(p => /^In$|Signal/.test(p));
-        if (mainIn) toPort = mainIn;
-        newWires.push({ fromBlock: from.id, fromPort, toBlock: to.id, toPort });
+      const conn = bestConnection(newBlocks[i], newBlocks[i + 1]);
+      if (conn) {
+        newWires.push({
+          fromBlock: newBlocks[i].id,
+          fromPort: conn.fromPort,
+          toBlock: newBlocks[i + 1].id,
+          toPort: conn.toPort,
+        });
       }
     }
     setWires(newWires);
