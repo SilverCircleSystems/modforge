@@ -446,20 +446,60 @@ class AudioEngine {
 
     switch (type) {
       case "VCO": {
+        // VCO with real pulse width modulation
+        // PWM technique: subtract two sawtooth waves offset by pulse width
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         gain.gain.value = 1;
         const wf = params.waveform || "sawtooth";
-        osc.type = wf === "saw" ? "sawtooth" : wf;
+        osc.type = wf === "saw" ? "sawtooth" : (wf === "square" ? "sawtooth" : wf);
         osc.frequency.value = params.frequency || 440;
         osc.detune.value = params.detune || 0;
-        osc.connect(gain);
         osc.start();
         node.osc = osc;
+
+        // For square/pulse: use dual-saw subtraction for variable pulse width
+        const pw = params.pulseWidth ?? 0.5;
+        if (wf === "square") {
+          // Create second sawtooth for PWM
+          const osc2 = this.ctx.createOscillator();
+          osc2.type = "sawtooth";
+          osc2.frequency.value = params.frequency || 440;
+          osc2.detune.value = params.detune || 0;
+          osc2.start();
+          node.osc2 = osc2;
+
+          // Invert the second saw
+          const invertGain = this.ctx.createGain();
+          invertGain.gain.value = -1;
+          osc2.connect(invertGain);
+          node.invertGain = invertGain;
+
+          // Sum both saws → pulse wave
+          const sumGain = this.ctx.createGain();
+          sumGain.gain.value = 0.5;
+          osc.connect(sumGain);
+          invertGain.connect(sumGain);
+          node.sumGain = sumGain;
+
+          // DC offset to shift pulse width
+          const dcOffset = this.ctx.createConstantSource();
+          dcOffset.offset.value = (pw - 0.5) * 2; // -1 to +1 range
+          dcOffset.start();
+          dcOffset.connect(sumGain);
+          node.dcOffset = dcOffset;
+
+          sumGain.connect(gain);
+        } else {
+          osc.connect(gain);
+        }
+
         node.output = gain;
         node.fmGain = this.ctx.createGain();
         node.fmGain.gain.value = 200;
         node.fmGain.connect(osc.frequency);
+        if (node.osc2) node.fmGain.connect(node.osc2.frequency);
+        node._currentWaveform = wf;
         break;
       }
       case "VCF": {
@@ -922,9 +962,35 @@ class AudioEngine {
 
     switch (node.type) {
       case "VCO":
-        if (paramName === "frequency" && node.osc) node.osc.frequency.value = value;
-        if (paramName === "detune" && node.osc) node.osc.detune.value = value;
-        if (paramName === "waveform" && node.osc) node.osc.type = value === "saw" ? "sawtooth" : value;
+        if (paramName === "frequency") {
+          if (node.osc) node.osc.frequency.value = value;
+          if (node.osc2) node.osc2.frequency.value = value;
+        }
+        if (paramName === "detune") {
+          if (node.osc) node.osc.detune.value = value;
+          if (node.osc2) node.osc2.detune.value = value;
+        }
+        if (paramName === "pulseWidth" && node.dcOffset) {
+          // Shift the DC offset to change pulse width
+          node.dcOffset.offset.value = (value - 0.5) * 2;
+        }
+        if (paramName === "waveform") {
+          // Waveform change requires rebuilding the oscillator topology
+          // Store connections, rebuild node
+          const savedConns = { ...node.connections };
+          const savedParams = {};
+          // Read current param values from the module
+          if (node.osc) savedParams.frequency = node.osc.frequency.value;
+          if (node.osc) savedParams.detune = node.osc.detune.value;
+          // Rebuild with new waveform
+          this.removeModuleNode(moduleId);
+          const newParams = { ...savedParams, waveform: value, pulseWidth: value === "square" ? 0.5 : undefined };
+          this.createModuleNode(moduleId, "VCO", newParams);
+          // Reconnect saved connections
+          Object.values(savedConns).forEach(c => {
+            try { this.connect(moduleId, c.fromPort, c.toId, c.toPort); } catch(e) {}
+          });
+        }
         break;
       case "VCF":
         if (paramName === "cutoff" && node.filter) node.filter.frequency.value = value;
@@ -1130,6 +1196,8 @@ class AudioEngine {
     });
     // Stop sources
     if (node.osc) try { node.osc.stop(); } catch (e) {}
+    if (node.osc2) try { node.osc2.stop(); } catch (e) {}
+    if (node.dcOffset) try { node.dcOffset.stop(); } catch (e) {}
     if (node.lfo) try { node.lfo.stop(); } catch (e) {}
     if (node.noiseSrc) try { node.noiseSrc.stop(); } catch (e) {}
     if (node.constSrc) try { node.constSrc.stop(); } catch (e) {}
