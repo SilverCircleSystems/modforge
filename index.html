@@ -1165,7 +1165,7 @@ class AudioEngine {
 }
 
 // ─── KNOB COMPONENT ─────────────────────────────────────────────────────────
-function Knob({ value, min, max, step, onChange, label, unit, size = 40, color }) {
+function Knob({ value, min, max, step, onChange, label, unit, size = 40, color, defaultValue }) {
   const dragRef = useRef(null);
 
   const pct = (value - min) / (max - min);
@@ -1196,6 +1196,12 @@ function Knob({ value, min, max, step, onChange, label, unit, size = 40, color }
     if (dragRef.current) dragRef.current.active = false;
   };
 
+  const onDoubleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (defaultValue !== undefined) onChange(defaultValue);
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, userSelect: "none" }}>
       <div
@@ -1203,6 +1209,8 @@ function Knob({ value, min, max, step, onChange, label, unit, size = 40, color }
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
+        onDoubleClick={onDoubleClick}
+        title="Drag to adjust • Double-click to reset"
         style={{
           width: size, height: size,
           borderRadius: "50%",
@@ -1337,6 +1345,7 @@ function ModulePanel({ module, def, onParamChange, onRemove, onPortClick, onPort
               label={p.label}
               unit={p.unit}
               color={def.color}
+              defaultValue={p.default}
             />
           );
         })}
@@ -1532,39 +1541,47 @@ function TunerDisplay({ module, engine }) {
 
   const absCents = Math.abs(cents);
   const inTune = absCents < 5;
-  const tuneColor = inTune ? "#2ecc71" : absCents < 15 ? "#f39c12" : "#e74c3c";
+  const tuneColor = freq > 0 ? (inTune ? "#2ecc71" : absCents < 15 ? "#f39c12" : "#e74c3c") : "#333";
+  const hasSignal = freq > 0;
 
   return (
     <div style={{
-      background: "#0a0a0a", borderRadius: 4, padding: "6px 8px", marginTop: 6,
-      textAlign: "center", border: `1px solid ${tuneColor}33`,
+      background: "#0a0a0a", borderRadius: 4, padding: "8px 10px", marginTop: 6,
+      textAlign: "center", border: `1px solid ${tuneColor}44`,
+      transition: "border-color 0.15s",
     }}>
-      <div style={{ fontSize: 20, fontWeight: 700, color: tuneColor, letterSpacing: 2 }}>
-        {note || "—"}
+      {/* Note name — large */}
+      <div style={{ fontSize: 24, fontWeight: 700, color: hasSignal ? tuneColor : "#333", letterSpacing: 2, lineHeight: 1.1 }}>
+        {hasSignal ? note : "—"}
       </div>
-      <div style={{ fontSize: 8, color: "#666", marginTop: 2 }}>
-        {freq > 0 ? `${freq.toFixed(1)} Hz` : "no signal"}
+      {/* Frequency */}
+      <div style={{ fontSize: 9, color: hasSignal ? "#888" : "#333", marginTop: 3 }}>
+        {hasSignal ? `${freq.toFixed(1)} Hz` : "patch a signal to In"}
       </div>
       {/* Cents bar */}
       <div style={{
-        margin: "4px auto", width: "90%", height: 6, background: "#111",
-        borderRadius: 3, position: "relative", overflow: "hidden",
+        margin: "5px auto 2px", width: "90%", height: 8, background: "#111",
+        borderRadius: 4, position: "relative", overflow: "hidden",
       }}>
+        {/* Center mark */}
         <div style={{
           position: "absolute", left: "50%", top: 0, bottom: 0,
           width: 2, background: "#333", transform: "translateX(-1px)",
         }} />
-        {freq > 0 && (
+        {/* Indicator */}
+        {hasSignal && (
           <div style={{
-            position: "absolute", top: 0, bottom: 0,
-            left: `${50 + cents}%`, width: 4, borderRadius: 2,
-            background: tuneColor, transform: "translateX(-2px)",
+            position: "absolute", top: 1, bottom: 1,
+            left: `${Math.max(5, Math.min(95, 50 + cents))}%`, width: 6, borderRadius: 3,
+            background: tuneColor, transform: "translateX(-3px)",
             transition: "left 0.08s",
+            boxShadow: `0 0 4px ${tuneColor}`,
           }} />
         )}
       </div>
-      <div style={{ fontSize: 7, color: tuneColor }}>
-        {freq > 0 ? (cents > 0 ? `+${cents}¢ sharp` : cents < 0 ? `${cents}¢ flat` : "in tune ✓") : ""}
+      {/* Cents readout */}
+      <div style={{ fontSize: 8, color: hasSignal ? tuneColor : "#333", marginTop: 2 }}>
+        {hasSignal ? (inTune ? "✓ in tune" : cents > 0 ? `+${cents}¢ sharp` : `${cents}¢ flat`) : ""}
       </div>
     </div>
   );
