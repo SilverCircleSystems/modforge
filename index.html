@@ -738,8 +738,8 @@ class AudioEngine {
           }
           // Normalized Square Difference Function (NSDF) — robust pitch detection
           const sr = this.ctx.sampleRate;
-          const minLag = Math.floor(sr / 5000); // Max detectable freq: 5000Hz
-          const maxLag = Math.floor(sr / 20);   // Min detectable freq: 20Hz
+          const minLag = Math.floor(sr / 3000); // Max detectable: ~3000Hz (C7, plenty for synth)
+          const maxLag = Math.floor(sr / 20);   // Min detectable: 20Hz
           const halfN = Math.min(Math.floor(n / 2), maxLag + 1);
 
           // Compute NSDF
