@@ -746,24 +746,65 @@ class AudioEngine {
           let rms = 0;
           for (let i = 0; i < n; i++) rms += buf[i] * buf[i];
           rms = Math.sqrt(rms / n);
-          if (rms < 0.01) { node._detectedPitch = 0; node._detectedNote = "—"; node._detectedCents = 0; return; }
-          // Autocorrelation
-          const corr = new Float32Array(n);
-          for (let lag = 0; lag < n; lag++) {
-            let sum = 0;
-            for (let i = 0; i < n - lag; i++) sum += buf[i] * buf[i + lag];
-            corr[lag] = sum;
+          if (rms < 0.01) {
+            node._detectedPitch = 0; node._detectedNote = "—"; node._detectedCents = 0;
+            if (node._onTunerUpdate) node._onTunerUpdate(node._detectedNote, node._detectedPitch, node._detectedCents);
+            return;
           }
-          // Find first dip then first peak
-          let dip = 0;
-          for (let i = 1; i < n; i++) { if (corr[i] < corr[i - 1]) { dip = i; break; } }
-          let bestLag = dip, bestVal = -1;
-          for (let i = dip; i < n; i++) {
-            if (corr[i] > bestVal) { bestVal = corr[i]; bestLag = i; }
-            if (corr[i] < 0 && bestVal > 0) break;
+          // Normalized Square Difference Function (NSDF) — robust pitch detection
+          const sr = this.ctx.sampleRate;
+          const minLag = Math.floor(sr / 5000); // Max detectable freq: 5000Hz
+          const maxLag = Math.floor(sr / 20);   // Min detectable freq: 20Hz
+          const halfN = Math.min(Math.floor(n / 2), maxLag + 1);
+
+          // Compute NSDF
+          const nsdf = new Float32Array(halfN);
+          for (let tau = 0; tau < halfN; tau++) {
+            let acf = 0, norm = 0;
+            for (let i = 0; i < n - tau; i++) {
+              acf += buf[i] * buf[i + tau];
+              norm += buf[i] * buf[i] + buf[i + tau] * buf[i + tau];
+            }
+            nsdf[tau] = norm > 0 ? (2 * acf) / norm : 0;
           }
-          if (bestLag > 0 && bestVal > 0) {
-            const freq = this.ctx.sampleRate / bestLag;
+
+          // Find all NSDF peaks above threshold
+          const peaks = [];
+          let inPositive = false;
+          let localPeakLag = 0, localPeakVal = -1;
+          const threshold = 0.2;
+
+          for (let i = minLag; i < halfN - 1; i++) {
+            if (nsdf[i] > 0) {
+              if (!inPositive) { inPositive = true; localPeakLag = i; localPeakVal = nsdf[i]; }
+              if (nsdf[i] > localPeakVal) { localPeakLag = i; localPeakVal = nsdf[i]; }
+            } else if (inPositive) {
+              if (localPeakVal > threshold) peaks.push({ lag: localPeakLag, val: localPeakVal });
+              inPositive = false;
+              localPeakLag = 0; localPeakVal = -1;
+            }
+          }
+          if (inPositive && localPeakVal > threshold) peaks.push({ lag: localPeakLag, val: localPeakVal });
+
+          // Select the first peak that reaches at least 80% of the maximum peak value
+          // This correctly identifies the fundamental even when harmonics are strong
+          let bestLag = 0, bestVal = -1;
+          if (peaks.length > 0) {
+            const maxPeakVal = Math.max(...peaks.map(p => p.val));
+            const keyThreshold = maxPeakVal * 0.8;
+            const chosen = peaks.find(p => p.val >= keyThreshold);
+            if (chosen) { bestLag = chosen.lag; bestVal = chosen.val; }
+          }
+
+          if (bestLag > 0 && bestVal > 0.2) {
+            // Parabolic interpolation for sub-sample accuracy
+            const y0 = bestLag > 0 ? nsdf[bestLag - 1] : nsdf[bestLag];
+            const y1 = nsdf[bestLag];
+            const y2 = bestLag < halfN - 1 ? nsdf[bestLag + 1] : nsdf[bestLag];
+            const shift = (y0 - y2) / (2 * (y0 - 2 * y1 + y2) || 1);
+            const refinedLag = bestLag + (isFinite(shift) ? shift : 0);
+
+            const freq = sr / refinedLag;
             if (freq > 20 && freq < 5000) {
               node._detectedPitch = freq;
               const ref = node.params.refPitch || 440;
@@ -776,6 +817,8 @@ class AudioEngine {
               node._detectedNote = `${name}${octave}`;
               node._detectedCents = cents;
             }
+          } else {
+            node._detectedPitch = 0; node._detectedNote = "—"; node._detectedCents = 0;
           }
           if (node._onTunerUpdate) node._onTunerUpdate(node._detectedNote, node._detectedPitch, node._detectedCents);
         }, 50);
@@ -1606,11 +1649,19 @@ function TunerDisplay({ module, engine }) {
   const [cents, setCents] = useState(0);
 
   useEffect(() => {
-    if (!engine) return;
-    const node = engine.nodes[module.id];
-    if (!node) return;
-    node._onTunerUpdate = (n, f, c) => { setNote(n); setFreq(f); setCents(c); };
-    return () => { if (node) node._onTunerUpdate = null; };
+    // Poll the engine node directly — more resilient than callback
+    const interval = setInterval(() => {
+      if (!engine) return;
+      const node = engine.nodes[module.id];
+      if (!node) return;
+      const p = node._detectedPitch || 0;
+      const n = node._detectedNote || "—";
+      const c = node._detectedCents || 0;
+      setFreq(p);
+      setNote(n);
+      setCents(c);
+    }, 60);
+    return () => clearInterval(interval);
   }, [engine, module.id]);
 
   const absCents = Math.abs(cents);
