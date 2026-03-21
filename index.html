@@ -264,7 +264,7 @@ const MODULE_DEFS = {
     params: [
       { name: "frequency", label: "FREQ", min: 20, max: 2000, default: 440, unit: "Hz" },
       { name: "detune", label: "FINE", min: -100, max: 100, default: 0, unit: "¢" },
-      { name: "waveform", label: "WAVE", options: ["sine", "saw", "square", "triangle"], default: "saw" },
+      { name: "waveform", label: "WAVE", options: ["sine", "saw", "square", "triangle"], default: "sine" },
       { name: "pulseWidth", label: "PW", min: 0.01, max: 0.99, default: 0.5, step: 0.01, unit: "" },
     ],
     inputs: ["V/Oct", "FM"],
@@ -446,59 +446,44 @@ class AudioEngine {
 
     switch (type) {
       case "VCO": {
-        // VCO with real pulse width modulation
-        // PWM technique: subtract two sawtooth waves offset by pulse width
+        // VCO with waveshaper-based pulse width modulation
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         gain.gain.value = 1;
-        const wf = params.waveform || "sawtooth";
-        osc.type = wf === "saw" ? "sawtooth" : (wf === "square" ? "sawtooth" : wf);
+        const wf = params.waveform || "sine";
         osc.frequency.value = params.frequency || 440;
         osc.detune.value = params.detune || 0;
-        osc.start();
-        node.osc = osc;
 
-        // For square/pulse: use dual-saw subtraction for variable pulse width
-        const pw = params.pulseWidth ?? 0.5;
         if (wf === "square") {
-          // Create second sawtooth for PWM
-          const osc2 = this.ctx.createOscillator();
-          osc2.type = "sawtooth";
-          osc2.frequency.value = params.frequency || 440;
-          osc2.detune.value = params.detune || 0;
-          osc2.start();
-          node.osc2 = osc2;
-
-          // Invert the second saw
-          const invertGain = this.ctx.createGain();
-          invertGain.gain.value = -1;
-          osc2.connect(invertGain);
-          node.invertGain = invertGain;
-
-          // Sum both saws → pulse wave
-          const sumGain = this.ctx.createGain();
-          sumGain.gain.value = 0.5;
-          osc.connect(sumGain);
-          invertGain.connect(sumGain);
-          node.sumGain = sumGain;
-
-          // DC offset to shift pulse width
-          const dcOffset = this.ctx.createConstantSource();
-          dcOffset.offset.value = (pw - 0.5) * 2; // -1 to +1 range
-          dcOffset.start();
-          dcOffset.connect(sumGain);
-          node.dcOffset = dcOffset;
-
-          sumGain.connect(gain);
+          // PWM via waveshaper: sawtooth → threshold → pulse
+          osc.type = "sawtooth";
+          const pw = params.pulseWidth ?? 0.5;
+          const wsNode = this.ctx.createWaveShaper();
+          const curveLen = 8192;
+          const curve = new Float32Array(curveLen);
+          // threshold maps sawtooth (-1 to +1) to pulse (-1 or +1) based on PW
+          const thresh = (pw - 0.5) * 2; // map 0-1 PW to -1 to +1 threshold
+          for (let i = 0; i < curveLen; i++) {
+            const x = (i / (curveLen - 1)) * 2 - 1; // -1 to +1
+            curve[i] = x > thresh ? 1 : -1;
+          }
+          wsNode.curve = curve;
+          wsNode.oversample = "2x";
+          osc.connect(wsNode);
+          wsNode.connect(gain);
+          node.waveShaper = wsNode;
+          node._pwCurveLen = curveLen;
         } else {
+          osc.type = wf === "saw" ? "sawtooth" : wf;
           osc.connect(gain);
         }
 
+        osc.start();
+        node.osc = osc;
         node.output = gain;
         node.fmGain = this.ctx.createGain();
         node.fmGain.gain.value = 200;
         node.fmGain.connect(osc.frequency);
-        if (node.osc2) node.fmGain.connect(node.osc2.frequency);
         node._currentWaveform = wf;
         break;
       }
@@ -1005,30 +990,35 @@ class AudioEngine {
 
     switch (node.type) {
       case "VCO":
-        if (paramName === "frequency") {
-          if (node.osc) node.osc.frequency.value = value;
-          if (node.osc2) node.osc2.frequency.value = value;
+        if (paramName === "frequency" && node.osc) {
+          node.osc.frequency.value = value;
         }
-        if (paramName === "detune") {
-          if (node.osc) node.osc.detune.value = value;
-          if (node.osc2) node.osc2.detune.value = value;
+        if (paramName === "detune" && node.osc) {
+          node.osc.detune.value = value;
         }
-        if (paramName === "pulseWidth" && node.dcOffset) {
-          // Shift the DC offset to change pulse width
-          node.dcOffset.offset.value = (value - 0.5) * 2;
+        if (paramName === "pulseWidth" && node.waveShaper) {
+          // Update the waveshaper curve to change pulse width
+          const curveLen = node._pwCurveLen || 8192;
+          const curve = new Float32Array(curveLen);
+          const thresh = (value - 0.5) * 2;
+          for (let i = 0; i < curveLen; i++) {
+            const x = (i / (curveLen - 1)) * 2 - 1;
+            curve[i] = x > thresh ? 1 : -1;
+          }
+          node.waveShaper.curve = curve;
         }
         if (paramName === "waveform") {
           // Waveform change requires rebuilding the oscillator topology
-          // Store connections, rebuild node
           const savedConns = { ...node.connections };
-          const savedParams = {};
-          // Read current param values from the module
-          if (node.osc) savedParams.frequency = node.osc.frequency.value;
-          if (node.osc) savedParams.detune = node.osc.detune.value;
-          // Rebuild with new waveform
+          const savedFreq = node.osc?.frequency?.value || 440;
+          const savedDetune = node.osc?.detune?.value || 0;
           this.removeModuleNode(moduleId);
-          const newParams = { ...savedParams, waveform: value, pulseWidth: value === "square" ? 0.5 : undefined };
-          this.createModuleNode(moduleId, "VCO", newParams);
+          this.createModuleNode(moduleId, "VCO", {
+            waveform: value,
+            frequency: savedFreq,
+            detune: savedDetune,
+            pulseWidth: 0.5,
+          });
           // Reconnect saved connections
           Object.values(savedConns).forEach(c => {
             try { this.connect(moduleId, c.fromPort, c.toId, c.toPort); } catch(e) {}
