@@ -5006,7 +5006,7 @@ function EurorackPrototyper() {
     const id = `mod_${nextId.current++}`;
     const newMod = { id, type, params };
     setModules(prev => [...prev, newMod]);
-    if (engineRef.current && engineRef.current.isRunning) {
+    if (engineRef.current && engineRef.current.ctx) {
       engineRef.current.createModuleNode(id, type, params);
     }
   };
@@ -5089,7 +5089,7 @@ function EurorackPrototyper() {
     } else {
       const newConn = { fromId, fromPort, toId, toPort };
       setConnections(prev => [...prev, newConn]);
-      if (engineRef.current && engineRef.current.isRunning) {
+      if (engineRef.current) {
         engineRef.current.connect(fromId, fromPort, toId, toPort);
       }
     }
