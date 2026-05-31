@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MODFORGE ‚Äî Eurorack Prototyper</title>
+<title>MODFORGE — Eurorack Prototyper</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  /* ‚îÄ‚îÄ Theme palette (neutral chrome only; module accent colors are unchanged) ‚îÄ‚îÄ
+  /* ── Theme palette (neutral chrome only; module accent colors are unchanged) ──
      Dark is the default on :root. Adding class "theme-light" to <html> flips it. */
   :root {
     --bg: #0a0a0a;        /* page background */
@@ -21,7 +21,7 @@
     --dim-2: #888;        /* icons, secondary */
     --soft: #aaa;
     --strong: #ddd;       /* strong text */
-    --canvas: #0a0a0a;    /* SVG schematic canvas ‚Äî stays dark in BOTH themes */
+    --canvas: #0a0a0a;    /* SVG schematic canvas — stays dark in BOTH themes */
     --scroll-thumb: #333;
     --scroll-thumb-hover: #555;
     --active-bg: #fff;    /* selected nav button background */
@@ -124,19 +124,19 @@ const COMPONENT_BOM = {
       note: "Waveshaping & buffering",
       approxCost: 0.80
     }, {
-      part: "Tempco Resistor 1kŒ©",
+      part: "Tempco Resistor 1kΩ",
       qty: 1,
       ref: "R_TC",
       note: "Temperature compensation for V/Oct tracking",
       approxCost: 3.00
     }, {
-      part: "1kŒ© Resistor 1%",
+      part: "1kΩ Resistor 1%",
       qty: 4,
       ref: "R1-R4",
       note: "Precision metal film",
       approxCost: 0.40
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 3,
       ref: "R5-R7",
       note: "Scaling resistors",
@@ -148,7 +148,7 @@ const COMPONENT_BOM = {
       note: "Decoupling",
       approxCost: 0.40
     }, {
-      part: "10¬µF Electrolytic Cap",
+      part: "10µF Electrolytic Cap",
       qty: 2,
       ref: "C5-C6",
       note: "Power filtering",
@@ -160,13 +160,13 @@ const COMPONENT_BOM = {
       note: "Timing capacitor (critical for tuning)",
       approxCost: 0.50
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT1",
       note: "Frequency/Pitch",
       approxCost: 1.20
     }, {
-      part: "50kŒ© Linear Pot (Alpha 9mm)",
+      part: "50kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT2",
       note: "Fine Tune",
@@ -211,25 +211,25 @@ const COMPONENT_BOM = {
       note: "CV summing",
       approxCost: 0.60
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT1",
       note: "Cutoff Frequency",
       approxCost: 1.20
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT2",
       note: "Resonance",
       approxCost: 1.20
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 6,
       ref: "R1-R6",
       note: "Various scaling",
       approxCost: 0.60
     }, {
-      part: "10kŒ© Resistor 1%",
+      part: "10kΩ Resistor 1%",
       qty: 4,
       ref: "R7-R10",
       note: "Feedback network",
@@ -247,7 +247,7 @@ const COMPONENT_BOM = {
       note: "Filter stages",
       approxCost: 1.00
     }, {
-      part: "10¬µF Electrolytic Cap",
+      part: "10µF Electrolytic Cap",
       qty: 2,
       ref: "C9-C10",
       note: "Power filtering",
@@ -286,19 +286,19 @@ const COMPONENT_BOM = {
       note: "Input/output buffering",
       approxCost: 0.60
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT1",
       note: "Gain / Level",
       approxCost: 1.20
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 3,
       ref: "R1-R3",
       note: "Scaling",
       approxCost: 0.30
     }, {
-      part: "10kŒ© Resistor 1%",
+      part: "10kΩ Resistor 1%",
       qty: 2,
       ref: "R4-R5",
       note: "Feedback",
@@ -310,7 +310,7 @@ const COMPONENT_BOM = {
       note: "Decoupling",
       approxCost: 0.30
     }, {
-      part: "10¬µF Electrolytic Cap",
+      part: "10µF Electrolytic Cap",
       qty: 2,
       ref: "C4-C5",
       note: "Power filtering",
@@ -355,25 +355,25 @@ const COMPONENT_BOM = {
       note: "Stage switching",
       approxCost: 0.50
     }, {
-      part: "1MŒ© Log Pot (Alpha 9mm)",
+      part: "1MΩ Log Pot (Alpha 9mm)",
       qty: 2,
       ref: "POT1-POT2",
       note: "Attack & Decay",
       approxCost: 2.40
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT3",
       note: "Sustain level",
       approxCost: 1.20
     }, {
-      part: "1MŒ© Log Pot (Alpha 9mm)",
+      part: "1MΩ Log Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT4",
       note: "Release",
       approxCost: 1.20
     }, {
-      part: "1¬µF Film Cap",
+      part: "1µF Film Cap",
       qty: 1,
       ref: "C1",
       note: "Timing capacitor",
@@ -385,7 +385,7 @@ const COMPONENT_BOM = {
       note: "Decoupling",
       approxCost: 0.40
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 4,
       ref: "R1-R4",
       note: "Various",
@@ -424,25 +424,25 @@ const COMPONENT_BOM = {
       note: "Triangle core & waveshaping",
       approxCost: 0.80
     }, {
-      part: "1MŒ© Log Pot (Alpha 9mm)",
+      part: "1MΩ Log Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT1",
       note: "Rate",
       approxCost: 1.20
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT2",
       note: "Depth / Amplitude",
       approxCost: 1.20
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 4,
       ref: "R1-R4",
       note: "Integrator & comparator",
       approxCost: 0.40
     }, {
-      part: "10kŒ© Resistor 1%",
+      part: "10kΩ Resistor 1%",
       qty: 2,
       ref: "R5-R6",
       note: "Scaling",
@@ -454,7 +454,7 @@ const COMPONENT_BOM = {
       note: "Decoupling",
       approxCost: 0.30
     }, {
-      part: "1¬µF Film Cap",
+      part: "1µF Film Cap",
       qty: 1,
       ref: "C4",
       note: "Integrator timing",
@@ -499,13 +499,13 @@ const COMPONENT_BOM = {
       note: "Summing amplifier (4 inputs)",
       approxCost: 0.80
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 4,
       ref: "POT1-POT4",
       note: "Channel levels",
       approxCost: 4.80
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 5,
       ref: "R1-R5",
       note: "Summing & feedback",
@@ -517,7 +517,7 @@ const COMPONENT_BOM = {
       note: "Decoupling",
       approxCost: 0.20
     }, {
-      part: "10¬µF Electrolytic Cap",
+      part: "10µF Electrolytic Cap",
       qty: 2,
       ref: "C3-C4",
       note: "Power filtering",
@@ -556,13 +556,13 @@ const COMPONENT_BOM = {
       note: "Amplification & pink filter",
       approxCost: 0.60
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 3,
       ref: "R1-R3",
       note: "Gain setting",
       approxCost: 0.30
     }, {
-      part: "10kŒ© Resistor 1%",
+      part: "10kΩ Resistor 1%",
       qty: 2,
       ref: "R4-R5",
       note: "Filter network",
@@ -625,7 +625,7 @@ const COMPONENT_BOM = {
       note: "Decoupling",
       approxCost: 0.30
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 3,
       ref: "R1-R3",
       note: "Various",
@@ -664,31 +664,31 @@ const COMPONENT_BOM = {
       note: "Voltage-controlled panning (2 of 4 channels)",
       approxCost: 5.50
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT1",
       note: "Pan position",
       approxCost: 1.20
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT2",
       note: "Width / Spread",
       approxCost: 1.20
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT3",
       note: "Output level",
       approxCost: 1.20
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 6,
       ref: "R1-R6",
       note: "Pan law network & scaling",
       approxCost: 0.60
     }, {
-      part: "10kŒ© Resistor 1%",
+      part: "10kΩ Resistor 1%",
       qty: 4,
       ref: "R7-R10",
       note: "Summing & feedback",
@@ -700,7 +700,7 @@ const COMPONENT_BOM = {
       note: "Decoupling",
       approxCost: 0.40
     }, {
-      part: "10¬µF Electrolytic Cap",
+      part: "10µF Electrolytic Cap",
       qty: 2,
       ref: "C5-C6",
       note: "Power filtering",
@@ -754,7 +754,7 @@ const COMPONENT_BOM = {
       part: "TL074 Quad Op-Amp",
       qty: 1,
       ref: "U3",
-      note: "Output buffering & scaling to ¬±5V",
+      note: "Output buffering & scaling to ±5V",
       approxCost: 0.80
     }, {
       part: "TL072 Dual Op-Amp",
@@ -775,25 +775,25 @@ const COMPONENT_BOM = {
       note: "Step on/off toggles",
       approxCost: 1.60
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT1",
       note: "Tempo / BPM",
       approxCost: 1.20
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 4,
       ref: "R1-R4",
       note: "DAC scaling & reference",
       approxCost: 0.40
     }, {
-      part: "470Œ© Resistor",
+      part: "470Ω Resistor",
       qty: 8,
       ref: "R5-R12",
       note: "LED current limiting",
       approxCost: 0.80
     }, {
-      part: "10kŒ© Resistor 1%",
+      part: "10kΩ Resistor 1%",
       qty: 8,
       ref: "R13-R20",
       note: "Switch pull-downs",
@@ -805,7 +805,7 @@ const COMPONENT_BOM = {
       note: "Decoupling",
       approxCost: 0.40
     }, {
-      part: "10¬µF Electrolytic Cap",
+      part: "10µF Electrolytic Cap",
       qty: 2,
       ref: "C7-C8",
       note: "Power filtering",
@@ -874,13 +874,13 @@ const COMPONENT_BOM = {
       note: "Sharp/flat indicators",
       approxCost: 0.20
     }, {
-      part: "470Œ© Resistor",
+      part: "470Ω Resistor",
       qty: 3,
       ref: "R1-R3",
       note: "LED current limiting",
       approxCost: 0.30
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 2,
       ref: "R4-R5",
       note: "Input scaling",
@@ -949,7 +949,7 @@ const COMPONENT_BOM = {
       note: "Crystal load caps",
       approxCost: 0.10
     }, {
-      part: "100kŒ© Linear Pot (Alpha 9mm)",
+      part: "100kΩ Linear Pot (Alpha 9mm)",
       qty: 1,
       ref: "POT1",
       note: "Tempo / BPM",
@@ -967,13 +967,13 @@ const COMPONENT_BOM = {
       note: "Tap tempo & Reset",
       approxCost: 0.40
     }, {
-      part: "470Œ© Resistor",
+      part: "470Ω Resistor",
       qty: 1,
       ref: "R1",
       note: "LED current limiting",
       approxCost: 0.10
     }, {
-      part: "10kŒ© Resistor 1%",
+      part: "10kΩ Resistor 1%",
       qty: 2,
       ref: "R2-R3",
       note: "Switch pull-downs",
@@ -1009,16 +1009,16 @@ const COMPONENT_BOM = {
       part: "TL074 Quad Op-Amp",
       qty: 1,
       ref: "U1",
-      note: "4√ó unity-gain buffers for isolated outputs",
+      note: "4× unity-gain buffers for isolated outputs",
       approxCost: 0.80
     }, {
-      part: "100kŒ© Resistor 1%",
+      part: "100kΩ Resistor 1%",
       qty: 4,
       ref: "R1-R4",
       note: "Buffer feedback resistors",
       approxCost: 0.40
     }, {
-      part: "1kŒ© Resistor 1%",
+      part: "1kΩ Resistor 1%",
       qty: 4,
       ref: "R5-R8",
       note: "Output protection",
@@ -1033,7 +1033,7 @@ const COMPONENT_BOM = {
       part: "Thonkiconn 3.5mm Jack (PJ398SM)",
       qty: 5,
       ref: "J1-J5",
-      note: "1√ó Input, 4√ó Output",
+      note: "1× Input, 4× Output",
       approxCost: 5.00
     }, {
       part: "10-pin Eurorack Power Header",
@@ -1052,7 +1052,7 @@ const COMPONENT_BOM = {
 const MODULE_DEFS = {
   VCO: {
     color: "#e74c3c",
-    icon: "‚óä",
+    icon: "◊",
     params: [{
       name: "frequency",
       label: "FREQ",
@@ -1066,7 +1066,7 @@ const MODULE_DEFS = {
       min: -100,
       max: 100,
       default: 0,
-      unit: "¬¢"
+      unit: "¢"
     }, {
       name: "waveform",
       label: "WAVE",
@@ -1095,7 +1095,7 @@ const MODULE_DEFS = {
   },
   VCF: {
     color: "#3498db",
-    icon: "‚âã",
+    icon: "≋",
     params: [{
       name: "cutoff",
       label: "CUTOFF",
@@ -1131,7 +1131,7 @@ const MODULE_DEFS = {
   },
   VCA: {
     color: "#2ecc71",
-    icon: "‚ñ≤",
+    icon: "▲",
     params: [{
       name: "gain",
       label: "GAIN",
@@ -1155,7 +1155,7 @@ const MODULE_DEFS = {
   },
   ADSR: {
     color: "#f39c12",
-    icon: "‚üã",
+    icon: "⟋",
     params: [{
       name: "attack",
       label: "ATK",
@@ -1200,7 +1200,7 @@ const MODULE_DEFS = {
   },
   LFO: {
     color: "#9b59b6",
-    icon: "‚àø",
+    icon: "∿",
     params: [{
       name: "rate",
       label: "RATE",
@@ -1231,7 +1231,7 @@ const MODULE_DEFS = {
   },
   MIXER: {
     color: "#1abc9c",
-    icon: "‚â°",
+    icon: "≡",
     params: [{
       name: "ch1",
       label: "CH 1",
@@ -1285,7 +1285,7 @@ const MODULE_DEFS = {
   },
   NOISE: {
     color: "#7f8c8d",
-    icon: "‚ñë",
+    icon: "░",
     params: [{
       name: "type",
       label: "TYPE",
@@ -1308,7 +1308,7 @@ const MODULE_DEFS = {
   },
   "SAMPLE & HOLD": {
     color: "#e67e22",
-    icon: "‚åê",
+    icon: "⌐",
     params: [{
       name: "rate",
       label: "RATE",
@@ -1332,7 +1332,7 @@ const MODULE_DEFS = {
   },
   STEREO: {
     color: "#00bcd4",
-    icon: "‚óâ",
+    icon: "◉",
     params: [{
       name: "pan",
       label: "PAN",
@@ -1381,7 +1381,7 @@ const MODULE_DEFS = {
   },
   SEQ: {
     color: "#ff5722",
-    icon: "‚ñ¶",
+    icon: "▦",
     params: [{
       name: "bpm",
       label: "BPM",
@@ -1425,7 +1425,7 @@ const MODULE_DEFS = {
   },
   TUNER: {
     color: "#4caf50",
-    icon: "‚ô™",
+    icon: "♪",
     params: [{
       name: "refPitch",
       label: "REF",
@@ -1447,7 +1447,7 @@ const MODULE_DEFS = {
   },
   CLOCK: {
     color: "#ff9800",
-    icon: "‚è±",
+    icon: "⏱",
     params: [{
       name: "bpm",
       label: "BPM",
@@ -1478,10 +1478,10 @@ const MODULE_DEFS = {
       name: "Clock",
       signalType: "clock"
     }, {
-      name: "√∑2",
+      name: "÷2",
       signalType: "clock"
     }, {
-      name: "√∑4",
+      name: "÷4",
       signalType: "clock"
     }, {
       name: "Reset",
@@ -1490,7 +1490,7 @@ const MODULE_DEFS = {
   },
   MULT: {
     color: "#b0bec5",
-    icon: "‚ëÉ",
+    icon: "⑃",
     params: [{
       name: "gain",
       label: "GAIN",
@@ -1521,7 +1521,7 @@ const MODULE_DEFS = {
 };
 const OUTPUT_MODULE = {
   color: "#ecf0f1",
-  icon: "üîä",
+  icon: "🔊",
   params: [{
     name: "volume",
     label: "VOL",
@@ -1869,7 +1869,7 @@ class AudioEngine {
             rms = Math.sqrt(rms / n);
             if (rms < 0.01) {
               node._detectedPitch = 0;
-              node._detectedNote = "‚Äî";
+              node._detectedNote = "—";
               node._detectedCents = 0;
               if (node._onTunerUpdate) node._onTunerUpdate(node._detectedNote, node._detectedPitch, node._detectedCents);
               return;
@@ -1950,7 +1950,7 @@ class AudioEngine {
               }
             } else {
               node._detectedPitch = 0;
-              node._detectedNote = "‚Äî";
+              node._detectedNote = "—";
               node._detectedCents = 0;
             }
             if (node._onTunerUpdate) node._onTunerUpdate(node._detectedNote, node._detectedPitch, node._detectedCents);
@@ -2308,7 +2308,7 @@ class AudioEngine {
     } else if (fromNode.type === "SEQ") {
       if (fromPort === "Trig") src = fromNode.outputTrig;else if (fromPort === "CV") src = fromNode.outputCV;else src = fromNode.output;
     } else if (fromNode.type === "CLOCK") {
-      if (fromPort === "√∑2") src = fromNode.outputDiv2;else if (fromPort === "√∑4") src = fromNode.outputDiv4;else if (fromPort === "Reset") src = fromNode.outputReset;else src = fromNode.output;
+      if (fromPort === "÷2") src = fromNode.outputDiv2;else if (fromPort === "÷4") src = fromNode.outputDiv4;else if (fromPort === "Reset") src = fromNode.outputReset;else src = fromNode.output;
     } else if (fromNode.type === "MULT") {
       if (fromPort === "A") src = fromNode.outA;else if (fromPort === "B") src = fromNode.outB;else if (fromPort === "C") src = fromNode.outC;else if (fromPort === "D") src = fromNode.outD;else src = fromNode.output;
     } else {
@@ -2937,7 +2937,7 @@ function TunerDisplay({
   module,
   engine
 }) {
-  const [note, setNote] = useState("‚Äî");
+  const [note, setNote] = useState("—");
   const [freq, setFreq] = useState(0);
   const [cents, setCents] = useState(0);
   useEffect(() => {
@@ -2946,7 +2946,7 @@ function TunerDisplay({
       const node = engine.nodes[module.id];
       if (!node) return;
       const p = node._detectedPitch || 0;
-      const n = node._detectedNote || "‚Äî";
+      const n = node._detectedNote || "—";
       const c = node._detectedCents || 0;
       setFreq(p);
       setNote(n);
@@ -2976,7 +2976,7 @@ function TunerDisplay({
       letterSpacing: 2,
       lineHeight: 1.1
     }
-  }, hasSignal ? note : "‚Äî"), React.createElement("div", {
+  }, hasSignal ? note : "—"), React.createElement("div", {
     style: {
       fontSize: 9,
       color: hasSignal ? "var(--dim-2)" : "var(--border-2)",
@@ -3021,7 +3021,7 @@ function TunerDisplay({
       color: hasSignal ? tuneColor : "var(--border-2)",
       marginTop: 2
     }
-  }, hasSignal ? inTune ? "‚úì in tune" : cents > 0 ? `+${cents}¬¢ sharp` : `${cents}¬¢ flat` : ""));
+  }, hasSignal ? inTune ? "✓ in tune" : cents > 0 ? `+${cents}¢ sharp` : `${cents}¢ flat` : ""));
 }
 function ClockDisplay({
   module,
@@ -3145,13 +3145,13 @@ function Waveform({
 const SUBCIRCUIT_LIBRARY = {
   oscillator: {
     label: "OSCILLATOR",
-    icon: "‚óä",
+    icon: "◊",
     color: "#e74c3c",
     description: "Sound generation cores",
     blocks: {
       cem3340_core: {
         label: "CEM3340 Core",
-        description: "Classic analog VCO IC ‚Äî saw/tri/square/pulse outputs",
+        description: "Classic analog VCO IC — saw/tri/square/pulse outputs",
         inputs: [{
           name: "V/Oct",
           signalType: "cv"
@@ -3185,7 +3185,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 8.50
         }, {
-          part: "Tempco Resistor 1kŒ©",
+          part: "Tempco Resistor 1kΩ",
           qty: 1,
           ref: "R",
           approxCost: 3.00
@@ -3195,7 +3195,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "C",
           approxCost: 0.50
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 2,
           ref: "R",
           approxCost: 0.20
@@ -3251,7 +3251,7 @@ const SUBCIRCUIT_LIBRARY = {
       },
       triangle_core: {
         label: "Triangle Core",
-        description: "Op-amp integrator + comparator ‚Äî triangle/square LFO or VCO",
+        description: "Op-amp integrator + comparator — triangle/square LFO or VCO",
         inputs: [{
           name: "CV",
           signalType: "cv"
@@ -3270,12 +3270,12 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.80
         }, {
-          part: "1¬µF Film Cap",
+          part: "1µF Film Cap",
           qty: 1,
           ref: "C",
           approxCost: 0.40
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 3,
           ref: "R",
           approxCost: 0.30
@@ -3288,10 +3288,10 @@ const SUBCIRCUIT_LIBRARY = {
         schematicFn: (x, y) => {
           let s = "";
           s += S.opamp(x, y, "U_a", 40, 40);
-          s += S.capacitor(x + 15, y - 30, true, "C", "1¬µF");
+          s += S.capacitor(x + 15, y - 30, true, "C", "1µF");
           s += S.wire(x + 40, y, x + 60, y);
           s += S.opamp(x + 70, y, "U_b", 40, 40);
-          s += S.resistor(x + 80, y - 30, true, "R", "100kŒ©");
+          s += S.resistor(x + 80, y - 30, true, "R", "100kΩ");
           return s;
         }
       },
@@ -3318,7 +3318,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.60
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 2,
           ref: "R",
           approxCost: 0.20
@@ -3346,13 +3346,13 @@ const SUBCIRCUIT_LIBRARY = {
   },
   filter: {
     label: "FILTER",
-    icon: "‚âã",
+    icon: "≋",
     color: "#3498db",
     description: "Frequency shaping",
     blocks: {
       ladder_4pole: {
         label: "4-Pole Ladder (24dB)",
-        description: "Classic Moog-style transistor ladder ‚Äî deep LP",
+        description: "Classic Moog-style transistor ladder — deep LP",
         inputs: [{
           name: "In",
           signalType: "audio"
@@ -3381,7 +3381,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "C",
           approxCost: 0.40
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 4,
           ref: "R",
           approxCost: 0.40
@@ -3429,7 +3429,7 @@ const SUBCIRCUIT_LIBRARY = {
       },
       svf_2pole: {
         label: "State Variable (12dB)",
-        description: "LM13700 OTA SVF ‚Äî simultaneous LP/BP/HP outputs",
+        description: "LM13700 OTA SVF — simultaneous LP/BP/HP outputs",
         inputs: [{
           name: "In",
           signalType: "audio"
@@ -3459,7 +3459,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.80
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 6,
           ref: "R",
           approxCost: 0.60
@@ -3509,7 +3509,7 @@ const SUBCIRCUIT_LIBRARY = {
       },
       ms20_1pole: {
         label: "MS-20 Style (6dB)",
-        description: "Korg MS-20 Sallen-Key topology ‚Äî single pole, gritty",
+        description: "Korg MS-20 Sallen-Key topology — single pole, gritty",
         inputs: [{
           name: "In",
           signalType: "audio"
@@ -3528,7 +3528,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 2.50
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 2,
           ref: "R",
           approxCost: 0.20
@@ -3555,13 +3555,13 @@ const SUBCIRCUIT_LIBRARY = {
   },
   amplifier: {
     label: "VCA / AMP",
-    icon: "‚ñ≤",
+    icon: "▲",
     color: "#2ecc71",
     description: "Volume control and mixing",
     blocks: {
       v2164_vca: {
         label: "V2164 VCA Cell",
-        description: "Low-distortion exponential VCA ‚Äî single channel",
+        description: "Low-distortion exponential VCA — single channel",
         inputs: [{
           name: "In",
           signalType: "audio"
@@ -3586,7 +3586,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.60
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 3,
           ref: "R",
           approxCost: 0.30
@@ -3620,7 +3620,7 @@ const SUBCIRCUIT_LIBRARY = {
       },
       ota_vca: {
         label: "OTA VCA",
-        description: "LM13700 as VCA ‚Äî simpler, slightly grittier",
+        description: "LM13700 as VCA — simpler, slightly grittier",
         inputs: [{
           name: "In",
           signalType: "audio"
@@ -3640,7 +3640,7 @@ const SUBCIRCUIT_LIBRARY = {
           note: "Uses 1 of 2 OTAs",
           approxCost: 2.50
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 2,
           ref: "R",
           approxCost: 0.20
@@ -3658,7 +3658,7 @@ const SUBCIRCUIT_LIBRARY = {
       },
       mixer_2ch: {
         label: "2-Ch Mixer",
-        description: "Op-amp summing mixer ‚Äî 2 inputs",
+        description: "Op-amp summing mixer — 2 inputs",
         inputs: [{
           name: "In 1",
           signalType: "audio"
@@ -3677,7 +3677,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.60
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 3,
           ref: "R",
           approxCost: 0.30
@@ -3699,7 +3699,7 @@ const SUBCIRCUIT_LIBRARY = {
   },
   envelope: {
     label: "ENVELOPE",
-    icon: "‚üã",
+    icon: "⟋",
     color: "#f39c12",
     description: "Envelope & trigger generation",
     blocks: {
@@ -3726,7 +3726,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.80
         }, {
-          part: "1¬µF Film Cap",
+          part: "1µF Film Cap",
           qty: 1,
           ref: "C",
           approxCost: 0.40
@@ -3736,12 +3736,12 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "D",
           approxCost: 0.10
         }, {
-          part: "1MŒ© Lin Pot (Alpha 9mm)",
+          part: "1MΩ Lin Pot (Alpha 9mm)",
           qty: 3,
           ref: "POT",
           approxCost: 3.60
         }, {
-          part: "100kŒ© Lin Pot (Alpha 9mm)",
+          part: "100kΩ Lin Pot (Alpha 9mm)",
           qty: 1,
           ref: "POT",
           approxCost: 1.20
@@ -3770,13 +3770,13 @@ const SUBCIRCUIT_LIBRARY = {
             anchor: "start"
           }]);
           s += S.opamp(x + 100, y + 5, "U_int", 35, 30);
-          s += S.capacitor(x + 110, y - 20, true, "C", "1¬µF");
+          s += S.capacitor(x + 110, y - 20, true, "C", "1µF");
           return s;
         }
       },
       ar_simple: {
         label: "AR Envelope",
-        description: "Simple attack-release ‚Äî just 2 pots + cap",
+        description: "Simple attack-release — just 2 pots + cap",
         inputs: [{
           name: "Gate",
           signalType: "gate"
@@ -3792,7 +3792,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.60
         }, {
-          part: "1¬µF Film Cap",
+          part: "1µF Film Cap",
           qty: 1,
           ref: "C",
           approxCost: 0.40
@@ -3802,7 +3802,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "D",
           approxCost: 0.05
         }, {
-          part: "1MŒ© Lin Pot (Alpha 9mm)",
+          part: "1MΩ Lin Pot (Alpha 9mm)",
           qty: 2,
           ref: "POT",
           approxCost: 2.40
@@ -3816,7 +3816,7 @@ const SUBCIRCUIT_LIBRARY = {
           let s = "";
           s += S.opamp(x, y, "U_a", 35, 30);
           s += S.diode(x + 45, y - 15, true);
-          s += S.capacitor(x + 45, y + 10, false, "C", "1¬µF");
+          s += S.capacitor(x + 45, y + 10, false, "C", "1µF");
           return s;
         }
       }
@@ -3824,7 +3824,7 @@ const SUBCIRCUIT_LIBRARY = {
   },
   modulation: {
     label: "MODULATION",
-    icon: "‚àø",
+    icon: "∿",
     color: "#9b59b6",
     description: "LFOs, S&H, slew",
     blocks: {
@@ -3849,17 +3849,17 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.80
         }, {
-          part: "1¬µF Film Cap",
+          part: "1µF Film Cap",
           qty: 1,
           ref: "C",
           approxCost: 0.40
         }, {
-          part: "1MŒ© Lin Pot (Alpha 9mm)",
+          part: "1MΩ Lin Pot (Alpha 9mm)",
           qty: 1,
           ref: "POT",
           approxCost: 1.20
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 3,
           ref: "R",
           approxCost: 0.30
@@ -3872,7 +3872,7 @@ const SUBCIRCUIT_LIBRARY = {
         schematicFn: (x, y) => {
           let s = "";
           s += S.opamp(x, y, "U_int", 35, 30);
-          s += S.capacitor(x + 10, y - 25, true, "C", "1¬µF");
+          s += S.capacitor(x + 10, y - 25, true, "C", "1µF");
           s += S.opamp(x + 60, y, "U_cmp", 35, 30);
           s += S.resistor(x + 70, y - 25, true, "R_fb", "100k");
           return s;
@@ -3943,7 +3943,7 @@ const SUBCIRCUIT_LIBRARY = {
       },
       slew_limiter: {
         label: "Slew Limiter",
-        description: "Portamento / glide ‚Äî separate rise & fall rates",
+        description: "Portamento / glide — separate rise & fall rates",
         inputs: [{
           name: "In",
           signalType: "cv"
@@ -3959,7 +3959,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.60
         }, {
-          part: "1¬µF Film Cap",
+          part: "1µF Film Cap",
           qty: 1,
           ref: "C",
           approxCost: 0.40
@@ -3969,7 +3969,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "D",
           approxCost: 0.10
         }, {
-          part: "1MŒ© Lin Pot (Alpha 9mm)",
+          part: "1MΩ Lin Pot (Alpha 9mm)",
           qty: 2,
           ref: "POT",
           approxCost: 2.40
@@ -3984,7 +3984,7 @@ const SUBCIRCUIT_LIBRARY = {
           s += S.opamp(x, y, "U_a", 35, 30);
           s += S.diode(x + 45, y - 12, true);
           s += S.diode(x + 45, y + 12, true);
-          s += S.capacitor(x + 70, y, false, "C", "1¬µF");
+          s += S.capacitor(x + 70, y, false, "C", "1µF");
           return s;
         }
       }
@@ -3992,13 +3992,13 @@ const SUBCIRCUIT_LIBRARY = {
   },
   utility: {
     label: "UTILITY",
-    icon: "‚äû",
+    icon: "⊞",
     color: "#00bcd4",
     description: "Buffers, inverters, attenuators, I/O",
     blocks: {
       input_buffer: {
         label: "Input Buffer",
-        description: "High-impedance input ‚Äî protects downstream circuits",
+        description: "High-impedance input — protects downstream circuits",
         inputs: [{
           name: "Jack In",
           signalType: "cv"
@@ -4015,7 +4015,7 @@ const SUBCIRCUIT_LIBRARY = {
           note: "Uses 1 of 2",
           approxCost: 0.60
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 1,
           ref: "R",
           approxCost: 0.10
@@ -4040,7 +4040,7 @@ const SUBCIRCUIT_LIBRARY = {
       },
       output_buffer: {
         label: "Output Buffer",
-        description: "Low-impedance output ‚Äî drives patch cables",
+        description: "Low-impedance output — drives patch cables",
         inputs: [{
           name: "Signal",
           signalType: "cv"
@@ -4057,7 +4057,7 @@ const SUBCIRCUIT_LIBRARY = {
           note: "Uses 1 of 2",
           approxCost: 0.60
         }, {
-          part: "1kŒ© Resistor",
+          part: "1kΩ Resistor",
           qty: 1,
           ref: "R",
           approxCost: 0.10
@@ -4082,7 +4082,7 @@ const SUBCIRCUIT_LIBRARY = {
       },
       attenuverter: {
         label: "Attenuverter",
-        description: "Bipolar attenuator ‚Äî scale & invert CV signals",
+        description: "Bipolar attenuator — scale & invert CV signals",
         inputs: [{
           name: "In",
           signalType: "cv"
@@ -4098,12 +4098,12 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.60
         }, {
-          part: "100kŒ© Lin Pot (Alpha 9mm)",
+          part: "100kΩ Lin Pot (Alpha 9mm)",
           qty: 1,
           ref: "POT",
           approxCost: 1.20
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 2,
           ref: "R",
           approxCost: 0.20
@@ -4123,13 +4123,13 @@ const SUBCIRCUIT_LIBRARY = {
       },
       inverter: {
         label: "Inverter",
-        description: "Unity gain inverter ‚Äî flips signal polarity",
+        description: "Unity gain inverter — flips signal polarity",
         inputs: [{
           name: "In",
           signalType: "cv"
         }],
         outputs: [{
-          name: "‚àíOut",
+          name: "−Out",
           signalType: "cv"
         }],
         controls: [],
@@ -4140,7 +4140,7 @@ const SUBCIRCUIT_LIBRARY = {
           note: "Uses 1 of 2",
           approxCost: 0.60
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 2,
           ref: "R",
           approxCost: 0.20
@@ -4188,12 +4188,12 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "U",
           approxCost: 0.80
         }, {
-          part: "100kŒ© Resistor 1%",
+          part: "100kΩ Resistor 1%",
           qty: 4,
           ref: "R",
           approxCost: 0.40
         }, {
-          part: "100kŒ© Lin Pot (Alpha 9mm)",
+          part: "100kΩ Lin Pot (Alpha 9mm)",
           qty: 1,
           ref: "POT",
           approxCost: 1.20
@@ -4238,13 +4238,13 @@ const SUBCIRCUIT_LIBRARY = {
   },
   digital: {
     label: "DIGITAL",
-    icon: "‚ñ¶",
+    icon: "▦",
     color: "#ff5722",
     description: "MCU-based, DACs, sequencing",
     blocks: {
       sequencer_8step: {
         label: "8-Step Sequencer",
-        description: "ATmega328P with MCP4822 DAC ‚Äî gate/trig/CV out",
+        description: "ATmega328P with MCP4822 DAC — gate/trig/CV out",
         inputs: [{
           name: "Clock In",
           signalType: "clock"
@@ -4301,7 +4301,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "SW",
           approxCost: 1.60
         }, {
-          part: "470Œ© Resistor",
+          part: "470Ω Resistor",
           qty: 8,
           ref: "R",
           approxCost: 0.80
@@ -4360,7 +4360,7 @@ const SUBCIRCUIT_LIBRARY = {
       },
       quantizer: {
         label: "Quantizer",
-        description: "ATmega + DAC ‚Äî snaps CV to scale notes",
+        description: "ATmega + DAC — snaps CV to scale notes",
         inputs: [{
           name: "CV In",
           signalType: "cv"
@@ -4428,15 +4428,15 @@ const SUBCIRCUIT_LIBRARY = {
   },
   power: {
     label: "POWER",
-    icon: "‚èö",
+    icon: "⏚",
     color: "#f39c12",
     description: "Power conditioning (auto-included)",
     blocks: {
       eurorack_power: {
         label: "Eurorack Power",
-        description: "10-pin header + decoupling ‚Äî always needed",
+        description: "10-pin header + decoupling — always needed",
         inputs: [],
-        outputs: ["+12V", "‚àí12V", "GND"],
+        outputs: ["+12V", "−12V", "GND"],
         controls: [],
         components: [{
           part: "10-pin Eurorack Power Header",
@@ -4444,7 +4444,7 @@ const SUBCIRCUIT_LIBRARY = {
           ref: "PWR",
           approxCost: 0.50
         }, {
-          part: "10¬µF Electrolytic Cap",
+          part: "10µF Electrolytic Cap",
           qty: 2,
           ref: "C",
           approxCost: 0.30
@@ -4462,7 +4462,7 @@ const SUBCIRCUIT_LIBRARY = {
         schematicFn: (x, y) => {
           let s = "";
           s += S.header(x, y, 10);
-          s += S.capacitor(x + 60, y + 5, false, "C", "10¬µF");
+          s += S.capacitor(x + 60, y + 5, false, "C", "10µF");
           s += S.capacitor(x + 80, y + 5, false, "C", "100nF");
           return s;
         }
@@ -4730,7 +4730,7 @@ function DesignView({
     setPlacedBlocks(newBlocks);
     const audioOutputs = ["Out", "LP", "BP", "HP", "Saw", "Tri", "Square", "Pulse", "White", "Pink", "Mix", "Buffered", "Jack Out", "Held", "Quantized CV"];
     const cvOutputs = ["Env", "CV", "Quantized CV", "Out"];
-    const gateOutputs = ["Gate", "Trigger", "Clock", "√∑2", "√∑4", "Reset"];
+    const gateOutputs = ["Gate", "Trigger", "Clock", "÷2", "÷4", "Reset"];
     const audioInputs = ["In", "Signal", "Jack In", "Mono", "L In", "R In", "In 1", "In 2"];
     const cvInputs = ["CV", "CV In", "FM", "Rate CV", "Pan CV", "V/Oct"];
     const gateInputs = ["Gate", "Clock", "Clock In", "Sync"];
@@ -4845,7 +4845,7 @@ function DesignView({
         neg12v: totalNeg
       },
       color: placedBlocks[0]?.catColor || "#9b59b6",
-      icon: "‚öô",
+      icon: "⚙",
       blockNames: placedBlocks.map(b => b.data.label)
     });
   };
@@ -4897,7 +4897,7 @@ function DesignView({
     const inPort = findPort(toData, "input", toPort);
     if (!canConnect(outPort, inPort)) {
       setInvalidWire({
-        msg: `${outPort.signalType.toUpperCase()} ‚Üí ${inPort.signalType.toUpperCase()} not allowed`,
+        msg: `${outPort.signalType.toUpperCase()} → ${inPort.signalType.toUpperCase()} not allowed`,
         stamp: Date.now()
       });
       setWireStart(null);
@@ -5188,7 +5188,7 @@ function DesignView({
       fontFamily: "'JetBrains Mono', monospace",
       textTransform: "uppercase"
     }
-  }, m === "chain" ? "‚õì CHAIN" : "‚ó´ CANVAS")))), showSaveLoad && React.createElement("div", {
+  }, m === "chain" ? "⛓ CHAIN" : "◫ CANVAS")))), showSaveLoad && React.createElement("div", {
     style: {
       background: "#0d0d0d",
       border: "1px solid #3498db44",
@@ -5414,7 +5414,7 @@ function DesignView({
       fontSize: 8,
       color: "var(--muted-2)"
     }
-  }, expandedCat === catKey ? "‚ñæ" : "‚ñ∏")), expandedCat === catKey && React.createElement("div", {
+  }, expandedCat === catKey ? "▾" : "▸")), expandedCat === catKey && React.createElement("div", {
     style: {
       paddingLeft: 10,
       marginTop: 4
@@ -5710,13 +5710,13 @@ function DesignView({
     }
   }, [{
     key: "schematic",
-    label: "‚éî MERGED SCHEMATIC"
+    label: "⎔ MERGED SCHEMATIC"
   }, {
     key: "bom",
-    label: "üìã COMBINED BOM"
+    label: "📋 COMBINED BOM"
   }, {
     key: "panel",
-    label: "‚ó´ PANEL LAYOUT"
+    label: "◫ PANEL LAYOUT"
   }].map(t => React.createElement("button", {
     key: t.key,
     onClick: () => setOutputTab(t.key),
@@ -6460,7 +6460,7 @@ const S = {
   opamp: (x, y, ref = "", w = 50, h = 50) => `<g transform="translate(${x},${y})">
       <polygon points="0,${-h / 2} ${w},0 0,${h / 2}" fill="none" stroke="#ccc" stroke-width="1.5"/>
       <text x="8" y="${-h / 4 + 2}" fill="#888" font-size="10" font-family="'JetBrains Mono', monospace">+</text>
-      <text x="8" y="${h / 4 + 2}" fill="#888" font-size="10" font-family="'JetBrains Mono', monospace">‚àí</text>
+      <text x="8" y="${h / 4 + 2}" fill="#888" font-size="10" font-family="'JetBrains Mono', monospace">−</text>
       ${ref ? `<text x="${w / 2}" y="${-h / 2 - 6}" fill="#666" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="middle">${ref}</text>` : ""}
     </g>`,
   pot: (x, y, ref = "", val = "") => `<g transform="translate(${x},${y})">
@@ -6543,7 +6543,7 @@ const MODULE_SCHEMATICS = {
   VCO: {
     width: 700,
     height: 420,
-    title: "VCO ‚Äî CEM3340 Voltage Controlled Oscillator",
+    title: "VCO — CEM3340 Voltage Controlled Oscillator",
     render: () => {
       let svg = "";
       svg += S.power(350, 20, "+12V");
@@ -6599,11 +6599,11 @@ const MODULE_SCHEMATICS = {
       svg += S.wire(68, 100, 100, 100);
       svg += S.resistor(130, 100, true, "R_TC", "1k Tempco");
       svg += S.wire(155, 100, 200, 100);
-      svg += S.resistor(220, 100, true, "R1", "100kŒ©");
+      svg += S.resistor(220, 100, true, "R1", "100kΩ");
       svg += S.wire(245, 100, 270, 90);
       svg += S.jack(60, 150, "FM In", true);
       svg += S.wire(68, 150, 100, 150);
-      svg += S.resistor(130, 150, true, "R2", "100kŒ©");
+      svg += S.resistor(130, 150, true, "R2", "100kΩ");
       svg += S.wire(155, 150, 200, 150);
       svg += S.pot(220, 150, "FM AMT", "100k");
       svg += S.wire(245, 150, 270, 110);
@@ -6613,24 +6613,24 @@ const MODULE_SCHEMATICS = {
       svg += S.wire(430, 90, 470, 90);
       svg += S.opamp(480, 90, "U2a", 40, 40);
       svg += S.wire(520, 90, 560, 90);
-      svg += S.resistor(570, 90, true, "R3", "1kŒ©");
+      svg += S.resistor(570, 90, true, "R3", "1kΩ");
       svg += S.wire(595, 90, 620, 90);
       svg += S.jack(640, 90, "OUT", false);
       svg += S.wire(430, 110, 470, 130);
       svg += S.opamp(480, 130, "U2b", 40, 40);
       svg += S.wire(520, 130, 560, 130);
       svg += S.label(560, 135, "TRI", 7, "#666");
-      svg += S.pot(200, 250, "FREQ", "100kŒ©");
+      svg += S.pot(200, 250, "FREQ", "100kΩ");
       svg += S.wire(200, 234, 200, 220);
       svg += S.wire(200, 220, 270, 130);
-      svg += S.pot(320, 250, "FINE", "50kŒ©");
+      svg += S.pot(320, 250, "FINE", "50kΩ");
       svg += S.wire(320, 234, 320, 220);
-      svg += S.resistor(320, 200, false, "R4", "10kŒ©");
+      svg += S.resistor(320, 200, false, "R4", "10kΩ");
       svg += S.wire(320, 180, 350, 150);
       svg += S.dot(350, 150);
       svg += S.header(300, 370, 10);
       svg += S.wire(325, 370, 325, 340);
-      svg += S.label(325, 335, "¬±12V", 8, "#f39c12");
+      svg += S.label(325, 335, "±12V", 8, "#f39c12");
       svg += S.ground(350, 310);
       svg += S.label(365, 310, "GND", 7, "#666");
       return svg;
@@ -6639,14 +6639,14 @@ const MODULE_SCHEMATICS = {
   VCF: {
     width: 700,
     height: 400,
-    title: "VCF ‚Äî 4-Pole Ladder Filter",
+    title: "VCF — 4-Pole Ladder Filter",
     render: () => {
       let svg = "";
       svg += S.power(350, 15, "+12V");
       svg += S.wire(350, 21, 350, 40);
       svg += S.jack(40, 100, "IN", true);
       svg += S.wire(48, 100, 80, 100);
-      svg += S.resistor(100, 100, true, "R1", "100kŒ©");
+      svg += S.resistor(100, 100, true, "R1", "100kΩ");
       svg += S.wire(125, 100, 160, 100);
       svg += S.opamp(170, 100, "U2a", 40, 40);
       svg += S.wire(210, 100, 240, 100);
@@ -6704,26 +6704,26 @@ const MODULE_SCHEMATICS = {
       svg += S.opamp(500, 85, "U2b", 40, 40);
       svg += S.wire(435, 85, 500, 85);
       svg += S.wire(540, 85, 580, 85);
-      svg += S.resistor(590, 85, true, "R5", "1kŒ©");
+      svg += S.resistor(590, 85, true, "R5", "1kΩ");
       svg += S.wire(615, 85, 640, 85);
       svg += S.jack(660, 85, "OUT", false);
-      svg += S.pot(130, 230, "CUTOFF", "100kŒ©");
+      svg += S.pot(130, 230, "CUTOFF", "100kΩ");
       svg += S.wire(130, 214, 130, 200);
-      svg += S.resistor(160, 200, true, "R3", "10kŒ©");
+      svg += S.resistor(160, 200, true, "R3", "10kΩ");
       svg += S.wire(185, 200, 220, 200);
       svg += S.wire(220, 200, 250, 110);
       svg += S.jack(40, 200, "CV In", true);
       svg += S.wire(48, 200, 80, 200);
-      svg += S.resistor(100, 200, true, "R2", "100kŒ©");
+      svg += S.resistor(100, 200, true, "R2", "100kΩ");
       svg += S.wire(125, 200, 130, 200);
       svg += S.dot(130, 200);
-      svg += S.pot(130, 310, "RES", "100kŒ©");
+      svg += S.pot(130, 310, "RES", "100kΩ");
       svg += S.wire(130, 294, 130, 280);
-      svg += S.resistor(160, 280, true, "R4", "10kŒ©");
+      svg += S.resistor(160, 280, true, "R4", "10kΩ");
       svg += S.wire(185, 280, 250, 135);
       svg += S.wire(540, 85, 540, 250);
       svg += S.wire(540, 250, 480, 250);
-      svg += S.resistor(460, 250, true, "R6", "100kŒ©");
+      svg += S.resistor(460, 250, true, "R6", "100kΩ");
       svg += S.wire(435, 250, 250, 150);
       svg += S.label(490, 240, "FEEDBACK", 7, "#555");
       svg += S.header(300, 360, 10);
@@ -6734,7 +6734,7 @@ const MODULE_SCHEMATICS = {
   VCA: {
     width: 600,
     height: 340,
-    title: "VCA ‚Äî V2164 Voltage Controlled Amplifier",
+    title: "VCA — V2164 Voltage Controlled Amplifier",
     render: () => {
       let svg = "";
       svg += S.power(300, 15, "+12V");
@@ -6746,7 +6746,7 @@ const MODULE_SCHEMATICS = {
       svg += S.dot(300, 35);
       svg += S.jack(40, 100, "IN", true);
       svg += S.wire(48, 100, 80, 100);
-      svg += S.resistor(100, 100, true, "R1", "100kŒ©");
+      svg += S.resistor(100, 100, true, "R1", "100kΩ");
       svg += S.wire(125, 100, 170, 100);
       svg += S.ic(180, 60, 120, 100, "V2164", [{
         x: -4,
@@ -6782,18 +6782,18 @@ const MODULE_SCHEMATICS = {
       svg += S.wire(300, 40, 300, 60);
       svg += S.jack(40, 160, "CV", true);
       svg += S.wire(48, 160, 80, 160);
-      svg += S.resistor(100, 160, true, "R2", "100kŒ©");
+      svg += S.resistor(100, 160, true, "R2", "100kΩ");
       svg += S.wire(125, 160, 150, 160);
-      svg += S.pot(150, 230, "GAIN", "100kŒ©");
+      svg += S.pot(150, 230, "GAIN", "100kΩ");
       svg += S.wire(150, 214, 150, 160);
       svg += S.wire(150, 160, 180, 110);
       svg += S.dot(150, 160);
       svg += S.wire(300, 85, 340, 85);
       svg += S.opamp(350, 85, "U2a", 40, 40);
-      svg += S.resistor(410, 85, true, "R3", "10kŒ©");
+      svg += S.resistor(410, 85, true, "R3", "10kΩ");
       svg += S.wire(435, 85, 460, 85);
       svg += S.wire(390, 85, 390, 50);
-      svg += S.resistor(390, 35, true, "R4", "100kŒ©");
+      svg += S.resistor(390, 35, true, "R4", "100kΩ");
       svg += S.wire(415, 35, 440, 35);
       svg += S.wire(440, 35, 440, 85);
       svg += S.dot(440, 85);
@@ -6807,14 +6807,14 @@ const MODULE_SCHEMATICS = {
   ADSR: {
     width: 700,
     height: 400,
-    title: "ADSR ‚Äî Envelope Generator (Op-Amp + CD4066)",
+    title: "ADSR — Envelope Generator (Op-Amp + CD4066)",
     render: () => {
       let svg = "";
       svg += S.power(350, 15, "+12V");
       svg += S.wire(350, 21, 350, 40);
       svg += S.jack(40, 80, "GATE", true);
       svg += S.wire(48, 80, 90, 80);
-      svg += S.resistor(110, 80, true, "R1", "100kŒ©");
+      svg += S.resistor(110, 80, true, "R1", "100kΩ");
       svg += S.wire(135, 80, 170, 80);
       svg += S.opamp(180, 80, "U1a", 40, 40);
       svg += S.wire(220, 80, 250, 80);
@@ -6849,18 +6849,18 @@ const MODULE_SCHEMATICS = {
         label: "SW3",
         anchor: "start"
       }]);
-      svg += S.pot(130, 200, "ATK", "1MŒ©");
+      svg += S.pot(130, 200, "ATK", "1MΩ");
       svg += S.wire(130, 184, 130, 170);
       svg += S.wire(130, 170, 260, 70);
-      svg += S.pot(230, 200, "DEC", "1MŒ©");
+      svg += S.pot(230, 200, "DEC", "1MΩ");
       svg += S.wire(230, 184, 230, 170);
       svg += S.wire(230, 170, 260, 90);
-      svg += S.pot(330, 200, "SUS", "100kŒ©");
+      svg += S.pot(330, 200, "SUS", "100kΩ");
       svg += S.wire(330, 184, 330, 170);
-      svg += S.pot(430, 200, "REL", "1MŒ©");
+      svg += S.pot(430, 200, "REL", "1MΩ");
       svg += S.wire(430, 184, 430, 170);
       svg += S.wire(430, 170, 360, 110);
-      svg += S.capacitor(420, 120, true, "C1", "1¬µF");
+      svg += S.capacitor(420, 120, true, "C1", "1µF");
       svg += S.wire(360, 90, 405, 120);
       svg += S.wire(435, 120, 460, 120);
       svg += S.diode(380, 70, true);
@@ -6885,16 +6885,16 @@ const MODULE_SCHEMATICS = {
   LFO: {
     width: 600,
     height: 340,
-    title: "LFO ‚Äî Triangle Core Low Frequency Oscillator",
+    title: "LFO — Triangle Core Low Frequency Oscillator",
     render: () => {
       let svg = "";
       svg += S.power(300, 15, "+12V");
       svg += S.wire(300, 21, 300, 40);
       svg += S.opamp(150, 100, "U1a", 40, 40);
-      svg += S.pot(80, 180, "RATE", "1MŒ©");
+      svg += S.pot(80, 180, "RATE", "1MΩ");
       svg += S.wire(80, 164, 80, 140);
       svg += S.wire(80, 140, 150, 112);
-      svg += S.capacitor(180, 60, true, "C4", "1¬µF");
+      svg += S.capacitor(180, 60, true, "C4", "1µF");
       svg += S.wire(150, 88, 150, 60);
       svg += S.wire(150, 60, 165, 60);
       svg += S.wire(195, 60, 210, 60);
@@ -6903,7 +6903,7 @@ const MODULE_SCHEMATICS = {
       svg += S.wire(190, 100, 210, 100);
       svg += S.wire(210, 100, 260, 100);
       svg += S.opamp(270, 100, "U1b", 40, 40);
-      svg += S.resistor(270, 60, true, "R1", "100kŒ©");
+      svg += S.resistor(270, 60, true, "R1", "100kΩ");
       svg += S.wire(295, 60, 320, 60);
       svg += S.wire(320, 60, 320, 100);
       svg += S.dot(320, 100);
@@ -6911,27 +6911,27 @@ const MODULE_SCHEMATICS = {
       svg += S.wire(245, 60, 240, 60);
       svg += S.wire(240, 60, 240, 88);
       svg += S.wire(320, 100, 360, 100);
-      svg += S.resistor(380, 100, true, "R2", "1kŒ©");
+      svg += S.resistor(380, 100, true, "R2", "1kΩ");
       svg += S.wire(405, 100, 440, 100);
       svg += S.jack(460, 100, "SQR", false);
       svg += S.wire(320, 100, 320, 160);
-      svg += S.resistor(320, 180, false, "R3", "100kŒ©");
+      svg += S.resistor(320, 180, false, "R3", "100kΩ");
       svg += S.wire(320, 205, 320, 220);
       svg += S.wire(320, 220, 80, 220);
       svg += S.wire(80, 220, 80, 200);
-      svg += S.label(200, 230, "SQUARE ‚Üí INTEGRATOR FEEDBACK", 7, "#555");
+      svg += S.label(200, 230, "SQUARE → INTEGRATOR FEEDBACK", 7, "#555");
       svg += S.wire(210, 100, 210, 160);
-      svg += S.resistor(210, 180, false, "R4", "10kŒ©");
+      svg += S.resistor(210, 180, false, "R4", "10kΩ");
       svg += S.wire(210, 205, 210, 230);
       svg += S.wire(210, 230, 440, 230);
       svg += S.jack(460, 230, "TRI", false);
       svg += S.wire(320, 160, 380, 160);
       svg += S.led(380, 160);
-      svg += S.resistor(410, 160, true, "R5", "470Œ©");
+      svg += S.resistor(410, 160, true, "R5", "470Ω");
       svg += S.wire(435, 160, 440, 160);
       svg += S.ground(440, 160);
       svg += S.label(400, 147, "LED1", 7, "#666");
-      svg += S.pot(380, 240, "DEPTH", "100kŒ©");
+      svg += S.pot(380, 240, "DEPTH", "100kΩ");
       svg += S.wire(355, 240, 210, 240);
       svg += S.dot(210, 230);
       svg += S.header(250, 290, 10);
@@ -6942,7 +6942,7 @@ const MODULE_SCHEMATICS = {
   MIXER: {
     width: 600,
     height: 350,
-    title: "MIXER ‚Äî 4-Channel Summing Amplifier",
+    title: "MIXER — 4-Channel Summing Amplifier",
     render: () => {
       let svg = "";
       svg += S.power(300, 15, "+12V");
@@ -6951,9 +6951,9 @@ const MODULE_SCHEMATICS = {
       chY.forEach((y, i) => {
         svg += S.jack(40, y, `IN ${i + 1}`, true);
         svg += S.wire(48, y, 80, y);
-        svg += S.pot(110, y, `CH${i + 1}`, "100kŒ©");
+        svg += S.pot(110, y, `CH${i + 1}`, "100kΩ");
         svg += S.wire(135, y, 170, y);
-        svg += S.resistor(190, y, true, `R${i + 1}`, "100kŒ©");
+        svg += S.resistor(190, y, true, `R${i + 1}`, "100kΩ");
         svg += S.wire(215, y, 260, y);
         if (i < 3) {
           svg += S.wire(260, y, 260, chY[i + 1]);
@@ -6962,14 +6962,14 @@ const MODULE_SCHEMATICS = {
       svg += S.dot(260, 155);
       svg += S.wire(260, 155, 300, 155);
       svg += S.opamp(310, 155, "U1a", 50, 50);
-      svg += S.resistor(335, 115, true, "R5", "100kŒ©");
+      svg += S.resistor(335, 115, true, "R5", "100kΩ");
       svg += S.wire(310, 115, 310, 130);
       svg += S.wire(360, 115, 370, 115);
       svg += S.wire(370, 115, 370, 155);
       svg += S.dot(370, 155);
       svg += S.wire(360, 155, 370, 155);
       svg += S.wire(370, 155, 420, 155);
-      svg += S.resistor(440, 155, true, "R6", "1kŒ©");
+      svg += S.resistor(440, 155, true, "R6", "1kΩ");
       svg += S.wire(465, 155, 500, 155);
       svg += S.jack(520, 155, "OUT", false);
       svg += S.wire(260, 155, 260, 167);
@@ -6984,12 +6984,12 @@ const MODULE_SCHEMATICS = {
   NOISE: {
     width: 550,
     height: 320,
-    title: "NOISE ‚Äî Reverse-Biased Transistor Noise Generator",
+    title: "NOISE — Reverse-Biased Transistor Noise Generator",
     render: () => {
       let svg = "";
       svg += S.power(280, 15, "+12V");
       svg += S.wire(280, 21, 280, 40);
-      svg += S.resistor(100, 50, false, "R1", "100kŒ©");
+      svg += S.resistor(100, 50, false, "R1", "100kΩ");
       svg += S.wire(100, 40, 100, 30);
       svg += S.power(100, 30, "+12V");
       svg += S.wire(100, 75, 100, 90);
@@ -7002,18 +7002,18 @@ const MODULE_SCHEMATICS = {
       svg += S.capacitor(160, 92, true, "C1", "100nF");
       svg += S.wire(175, 92, 210, 92);
       svg += S.opamp(220, 100, "U1a", 40, 40);
-      svg += S.resistor(245, 65, true, "R2", "100kŒ©");
+      svg += S.resistor(245, 65, true, "R2", "100kΩ");
       svg += S.wire(220, 65, 220, 80);
       svg += S.wire(270, 65, 280, 65);
       svg += S.wire(280, 65, 280, 100);
       svg += S.dot(280, 100);
       svg += S.wire(260, 100, 280, 100);
       svg += S.wire(280, 100, 320, 100);
-      svg += S.resistor(340, 100, true, "R3", "1kŒ©");
+      svg += S.resistor(340, 100, true, "R3", "1kΩ");
       svg += S.wire(365, 100, 400, 100);
       svg += S.jack(420, 100, "WHITE", false);
       svg += S.wire(280, 100, 280, 170);
-      svg += S.resistor(280, 190, false, "R4", "10kŒ©");
+      svg += S.resistor(280, 190, false, "R4", "10kΩ");
       svg += S.wire(280, 215, 280, 230);
       svg += S.capacitor(310, 230, true, "C4", "10nF");
       svg += S.wire(280, 230, 295, 230);
@@ -7029,14 +7029,14 @@ const MODULE_SCHEMATICS = {
   "SAMPLE & HOLD": {
     width: 600,
     height: 320,
-    title: "SAMPLE & HOLD ‚Äî LF398 Based",
+    title: "SAMPLE & HOLD — LF398 Based",
     render: () => {
       let svg = "";
       svg += S.power(300, 15, "+12V");
       svg += S.wire(300, 21, 300, 40);
       svg += S.jack(40, 100, "SIG IN", true);
       svg += S.wire(48, 100, 90, 100);
-      svg += S.resistor(110, 100, true, "R1", "100kŒ©");
+      svg += S.resistor(110, 100, true, "R1", "100kΩ");
       svg += S.wire(135, 100, 180, 100);
       svg += S.ic(190, 70, 120, 80, "LF398", [{
         x: -4,
@@ -7076,12 +7076,12 @@ const MODULE_SCHEMATICS = {
       svg += S.jack(40, 160, "CLOCK", true);
       svg += S.wire(48, 160, 90, 160);
       svg += S.opamp(110, 160, "U2a", 35, 30);
-      svg += S.resistor(110, 140, true, "R2", "100kŒ©");
+      svg += S.resistor(110, 140, true, "R2", "100kΩ");
       svg += S.wire(145, 160, 190, 110);
       svg += S.wire(310, 90, 370, 90);
       svg += S.opamp(380, 90, "U2b", 40, 40);
       svg += S.wire(420, 90, 460, 90);
-      svg += S.resistor(470, 90, true, "R3", "1kŒ©");
+      svg += S.resistor(470, 90, true, "R3", "1kΩ");
       svg += S.wire(495, 90, 530, 90);
       svg += S.jack(550, 90, "OUT", false);
       svg += S.header(250, 270, 10);
@@ -7092,14 +7092,14 @@ const MODULE_SCHEMATICS = {
   STEREO: {
     width: 700,
     height: 400,
-    title: "STEREO ‚Äî Voltage Controlled Stereo Panner",
+    title: "STEREO — Voltage Controlled Stereo Panner",
     render: () => {
       let svg = "";
       svg += S.power(350, 15, "+12V");
       svg += S.wire(350, 21, 350, 40);
       svg += S.jack(40, 100, "MONO", true);
       svg += S.wire(48, 100, 90, 100);
-      svg += S.resistor(110, 100, true, "R1", "100kŒ©");
+      svg += S.resistor(110, 100, true, "R1", "100kΩ");
       svg += S.wire(135, 100, 170, 100);
       svg += S.opamp(180, 100, "U1a", 40, 40);
       svg += S.wire(220, 100, 260, 100);
@@ -7144,31 +7144,31 @@ const MODULE_SCHEMATICS = {
       svg += S.wire(260, 85, 280, 85);
       svg += S.wire(260, 100, 260, 135);
       svg += S.wire(260, 135, 280, 135);
-      svg += S.pot(180, 260, "PAN", "100kŒ©");
+      svg += S.pot(180, 260, "PAN", "100kΩ");
       svg += S.wire(180, 244, 180, 230);
       svg += S.wire(180, 230, 220, 230);
-      svg += S.resistor(240, 230, true, "R2", "100kŒ©");
+      svg += S.resistor(240, 230, true, "R2", "100kΩ");
       svg += S.wire(265, 230, 280, 110);
       svg += S.label(250, 218, "CV_L", 7, "#3498db");
       svg += S.wire(180, 230, 180, 280);
       svg += S.opamp(200, 300, "U1b", 35, 30);
-      svg += S.resistor(200, 270, true, "R3", "100kŒ©");
+      svg += S.resistor(200, 270, true, "R3", "100kΩ");
       svg += S.wire(235, 300, 260, 300);
       svg += S.wire(260, 300, 280, 160);
       svg += S.label(250, 290, "CV_R (inverted)", 7, "#3498db");
       svg += S.jack(40, 260, "PAN CV", true);
       svg += S.wire(48, 260, 90, 260);
-      svg += S.resistor(110, 260, true, "R4", "100kŒ©");
+      svg += S.resistor(110, 260, true, "R4", "100kΩ");
       svg += S.wire(135, 260, 180, 260);
       svg += S.dot(180, 260);
       svg += S.jack(40, 160, "L IN", true);
       svg += S.wire(48, 160, 90, 160);
-      svg += S.resistor(110, 160, true, "R5", "100kŒ©");
+      svg += S.resistor(110, 160, true, "R5", "100kΩ");
       svg += S.wire(135, 160, 260, 160);
       svg += S.wire(260, 85, 260, 80);
       svg += S.jack(40, 200, "R IN", true);
       svg += S.wire(48, 200, 90, 200);
-      svg += S.resistor(110, 200, true, "R6", "100kŒ©");
+      svg += S.resistor(110, 200, true, "R6", "100kΩ");
       svg += S.wire(135, 200, 250, 200);
       svg += S.wire(250, 200, 260, 140);
       svg += S.wire(410, 85, 450, 85);
@@ -7179,7 +7179,7 @@ const MODULE_SCHEMATICS = {
       svg += S.opamp(460, 195, "U1d", 40, 40);
       svg += S.wire(500, 195, 540, 195);
       svg += S.jack(560, 195, "R OUT", false);
-      svg += S.pot(470, 260, "LEVEL", "100kŒ©");
+      svg += S.pot(470, 260, "LEVEL", "100kΩ");
       svg += S.header(300, 360, 10);
       svg += S.ground(350, 340);
       return svg;
@@ -7188,7 +7188,7 @@ const MODULE_SCHEMATICS = {
   SEQ: {
     width: 750,
     height: 480,
-    title: "SEQ ‚Äî ATmega328P 8-Step Sequencer",
+    title: "SEQ — ATmega328P 8-Step Sequencer",
     render: () => {
       let svg = "";
       svg += S.power(380, 15, "+12V");
@@ -7206,12 +7206,12 @@ const MODULE_SCHEMATICS = {
       }]);
       svg += S.wire(420, 50, 450, 50);
       svg += S.label(460, 50, "+5V", 8, "#2ecc71");
-      svg += S.capacitor(440, 65, false, "C7", "10¬µF");
+      svg += S.capacitor(440, 65, false, "C7", "10µF");
       svg += S.wire(440, 50, 440, 52);
       svg += S.dot(440, 50);
       svg += S.wire(440, 80, 440, 85);
       svg += S.ground(440, 85);
-      svg += S.capacitor(310, 28, true, "C8", "10¬µF");
+      svg += S.capacitor(310, 28, true, "C8", "10µF");
       svg += S.wire(295, 28, 290, 28);
       svg += S.ground(290, 28);
       svg += S.wire(325, 28, 340, 35);
@@ -7291,23 +7291,23 @@ const MODULE_SCHEMATICS = {
       svg += S.ground(180, 220);
       svg += S.jack(40, 110, "CLK IN", true);
       svg += S.wire(48, 110, 90, 110);
-      svg += S.resistor(110, 110, true, "R1", "100kŒ©");
+      svg += S.resistor(110, 110, true, "R1", "100kΩ");
       svg += S.wire(135, 110, 200, 110);
-      svg += S.pot(110, 200, "BPM", "100kŒ©");
+      svg += S.pot(110, 200, "BPM", "100kΩ");
       svg += S.wire(110, 184, 110, 170);
       svg += S.wire(110, 170, 200, 170);
       svg += S.label(80, 280, "STEP BUTTONS & LEDs", 9, "#ff5722");
       for (let i = 0; i < 8; i++) {
         const bx = 60 + i * 75;
         svg += S.led(bx, 310);
-        svg += S.resistor(bx + 20, 310, true, "", "470Œ©");
+        svg += S.resistor(bx + 20, 310, true, "", "470Ω");
         svg += S.wire(bx + 45, 310, bx + 50, 310);
         svg += S.label(bx, 330, `LED${i + 1}`, 6, "#666");
         svg += `<g transform="translate(${bx},350)">
           <rect x="-8" y="-6" width="16" height="12" fill="none" stroke="#ccc" stroke-width="1.5" rx="1"/>
           <line x1="-4" y1="0" x2="4" y2="0" stroke="#ccc" stroke-width="2"/>
         </g>`;
-        svg += S.resistor(bx, 375, false, "", "10kŒ©");
+        svg += S.resistor(bx, 375, false, "", "10kΩ");
         svg += S.wire(bx, 400, bx, 405);
         svg += S.ground(bx, 405);
         svg += S.label(bx, 420, `SW${i + 1}`, 6, "#666");
@@ -7349,7 +7349,7 @@ const MODULE_SCHEMATICS = {
       svg += S.label(420, 105, "SPI", 7, "#555");
       svg += S.wire(540, 115, 570, 115);
       svg += S.opamp(580, 115, "U3a", 40, 40);
-      svg += S.resistor(580, 80, true, "R2", "100kŒ©");
+      svg += S.resistor(580, 80, true, "R2", "100kΩ");
       svg += S.wire(605, 80, 630, 80);
       svg += S.wire(630, 80, 630, 115);
       svg += S.dot(630, 115);
@@ -7378,7 +7378,7 @@ const MODULE_SCHEMATICS = {
     height: 350,
     render: () => {
       let svg = "";
-      svg += S.label(300, 20, "CHROMATIC TUNER ‚Äî ATmega328P + OLED", 10, "#4caf50");
+      svg += S.label(300, 20, "CHROMATIC TUNER — ATmega328P + OLED", 10, "#4caf50");
       svg += S.power(50, 40, "+12V");
       svg += S.wire(50, 46, 50, 60);
       svg += S.ic(50, 60, 60, 30, "78L05", [{
@@ -7396,7 +7396,7 @@ const MODULE_SCHEMATICS = {
       svg += S.label(125, 58, "+5V", 7, "#e74c3c");
       svg += S.jack(50, 130, "AUDIO IN", true);
       svg += S.wire(68, 130, 90, 130);
-      svg += S.resistor(90, 130, true, "R4", "100kŒ©");
+      svg += S.resistor(90, 130, true, "R4", "100kΩ");
       svg += S.opamp(150, 130, "U2a", 40, 40);
       svg += S.wire(190, 130, 220, 130);
       svg += S.dot(220, 130);
@@ -7405,7 +7405,7 @@ const MODULE_SCHEMATICS = {
       svg += S.wire(265, 180, 300, 180);
       svg += S.jack(310, 180, "THRU", false);
       svg += S.wire(220, 130, 260, 130);
-      svg += S.resistor(260, 130, true, "R5", "100kŒ©");
+      svg += S.resistor(260, 130, true, "R5", "100kΩ");
       svg += S.wire(295, 130, 320, 130);
       svg += S.label(310, 120, "to ADC", 7, "#555");
       svg += S.ic(320, 100, 120, 80, "ATmega328P", [{
@@ -7455,13 +7455,13 @@ const MODULE_SCHEMATICS = {
       svg += S.label(280, 280, "0.96\" OLED", 7, "#4caf50");
       svg += S.wire(444, 120, 480, 120);
       svg += S.led(490, 120, "FLAT");
-      svg += S.resistor(510, 120, true, "R1", "470Œ©");
+      svg += S.resistor(510, 120, true, "R1", "470Ω");
       svg += S.wire(444, 135, 480, 135);
       svg += S.led(490, 135, "TUNE");
-      svg += S.resistor(510, 135, true, "R2", "470Œ©");
+      svg += S.resistor(510, 135, true, "R2", "470Ω");
       svg += S.wire(444, 150, 480, 150);
       svg += S.led(490, 150, "SHARP");
-      svg += S.resistor(510, 150, true, "R3", "470Œ©");
+      svg += S.resistor(510, 150, true, "R3", "470Ω");
       svg += S.header(50, 280, 10);
       svg += S.ground(100, 290);
       return svg;
@@ -7472,7 +7472,7 @@ const MODULE_SCHEMATICS = {
     height: 380,
     render: () => {
       let svg = "";
-      svg += S.label(325, 20, "MASTER CLOCK ‚Äî ATmega328P", 10, "#ff9800");
+      svg += S.label(325, 20, "MASTER CLOCK — ATmega328P", 10, "#ff9800");
       svg += S.power(50, 40, "+12V");
       svg += S.wire(50, 46, 50, 60);
       svg += S.ic(50, 60, 60, 30, "78L05", [{
@@ -7537,12 +7537,12 @@ const MODULE_SCHEMATICS = {
       svg += S.pot(100, 120, "BPM", "100k");
       svg += S.wire(125, 120, 176, 120);
       svg += S.wire(176, 140, 140, 145);
-      svg += S.label(90, 145, "TAP ‚î§", 7, "#555");
+      svg += S.label(90, 145, "TAP ┤", 7, "#555");
       svg += S.wire(176, 160, 140, 165);
-      svg += S.label(85, 165, "RST ‚î§", 7, "#555");
+      svg += S.label(85, 165, "RST ┤", 7, "#555");
       svg += S.wire(314, 120, 350, 120);
       svg += S.led(360, 120, "BEAT");
-      svg += S.resistor(380, 120, true, "R1", "470Œ©");
+      svg += S.resistor(380, 120, true, "R1", "470Ω");
       svg += S.wire(314, 140, 380, 140);
       svg += S.opamp(390, 140, "U2a", 35, 30);
       svg += S.wire(425, 140, 460, 140);
@@ -7550,11 +7550,11 @@ const MODULE_SCHEMATICS = {
       svg += S.wire(314, 160, 380, 170);
       svg += S.opamp(390, 170, "U2b", 35, 30);
       svg += S.wire(425, 170, 460, 170);
-      svg += S.jack(470, 170, "√∑2", false);
+      svg += S.jack(470, 170, "÷2", false);
       svg += S.wire(314, 180, 380, 200);
       svg += S.opamp(390, 200, "U2c", 35, 30);
       svg += S.wire(425, 200, 460, 200);
-      svg += S.jack(470, 200, "√∑4", false);
+      svg += S.jack(470, 200, "÷4", false);
       svg += S.wire(314, 200, 350, 240);
       svg += S.opamp(390, 240, "U2d", 35, 30);
       svg += S.wire(425, 240, 460, 240);
@@ -7565,12 +7565,12 @@ const MODULE_SCHEMATICS = {
     }
   },
   MULT: {
-    title: "BUFFERED MULTIPLE ‚Äî TL074 Quad Op-Amp",
+    title: "BUFFERED MULTIPLE — TL074 Quad Op-Amp",
     width: 550,
     height: 320,
     render: () => {
       let svg = "";
-      svg += S.label(275, 20, "BUFFERED MULTIPLE ‚Äî 1‚Üí4 SIGNAL SPLITTER", 10, "#b0bec5");
+      svg += S.label(275, 20, "BUFFERED MULTIPLE — 1→4 SIGNAL SPLITTER", 10, "#b0bec5");
       svg += S.power(50, 40, "+12V");
       svg += S.wire(50, 46, 50, 60);
       svg += S.wire(50, 60, 400, 60);
@@ -7589,14 +7589,14 @@ const MODULE_SCHEMATICS = {
         const y = 100 + i * 45;
         svg += S.wire(140, 115, 200, y);
         svg += S.dot(140, 115);
-        svg += S.resistor(220, y, true, `R${i + 1}`, "100kŒ©");
+        svg += S.resistor(220, y, true, `R${i + 1}`, "100kΩ");
         svg += S.opamp(270, y, `U1${String.fromCharCode(97 + i)}`, 40, 35);
-        svg += S.resistor(330, y - 25, true, `R${i + 5}`, "100kŒ©");
+        svg += S.resistor(330, y - 25, true, `R${i + 5}`, "100kΩ");
         svg += S.wire(310, y, 340, y);
         svg += S.wire(340, y, 340, y - 25);
         svg += S.wire(340, y - 25, 280, y - 25);
         svg += S.wire(340, y, 370, y);
-        svg += S.resistor(385, y, true, `R${i + 9}`, "1kŒ©");
+        svg += S.resistor(385, y, true, `R${i + 9}`, "1kΩ");
         svg += S.wire(410, y, 440, y);
         svg += S.jack(450, y, name, false);
       });
@@ -7685,27 +7685,27 @@ function SchematicView({
     }
   }, [{
     color: "#2ecc71",
-    symbol: "‚óè",
+    symbol: "●",
     label: "Input Jack"
   }, {
     color: "#e74c3c",
-    symbol: "‚óè",
+    symbol: "●",
     label: "Output Jack"
   }, {
     color: "#3498db",
-    symbol: "‚ñº",
+    symbol: "▼",
     label: "Potentiometer"
   }, {
     color: "#f39c12",
-    symbol: "‚ñ†",
+    symbol: "■",
     label: "Power Header"
   }, {
     color: "var(--muted-3)",
-    symbol: "‚ñ≥",
+    symbol: "△",
     label: "Op-Amp"
   }, {
     color: "#ccc",
-    symbol: "‚îÄ",
+    symbol: "─",
     label: "Wire"
   }].map((item, i) => React.createElement("div", {
     key: i,
@@ -8404,7 +8404,7 @@ function EurorackPrototyper() {
       const inPort = findPort(defForId(toId), "input", toPort);
       if (!canConnect(outPort, inPort)) {
         setInvalidConn({
-          msg: `${outPort.signalType.toUpperCase()} out ‚Üí ${inPort.signalType.toUpperCase()} in isn't a valid patch`,
+          msg: `${outPort.signalType.toUpperCase()} out → ${inPort.signalType.toUpperCase()} in isn't a valid patch`,
           stamp: Date.now()
         });
         setDrawingWire(null);
@@ -8663,7 +8663,7 @@ function EurorackPrototyper() {
       fontFamily: "'JetBrains Mono', monospace",
       textTransform: "uppercase"
     }
-  }, v === "patch" ? "‚ö° PATCH" : v === "bom" ? "üìã BOM" : v === "schematic" ? "‚éî SCHEMATIC" : "üîß DESIGN")), React.createElement("div", {
+  }, v === "patch" ? "⚡ PATCH" : v === "bom" ? "📋 BOM" : v === "schematic" ? "⎔ SCHEMATIC" : "🔧 DESIGN")), React.createElement("div", {
     style: {
       display: "flex",
       alignItems: "center",
@@ -8778,7 +8778,7 @@ function EurorackPrototyper() {
     style: {
       fontSize: 12
     }
-  }, theme === "light" ? "‚òæ" : "‚òÄ"), React.createElement("span", {
+  }, theme === "light" ? "☾" : "☀"), React.createElement("span", {
     style: {
       fontSize: 9,
       letterSpacing: 1
